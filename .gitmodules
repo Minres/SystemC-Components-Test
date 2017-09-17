@@ -1,0 +1,4 @@
+[submodule "sc-components"]
+	path = sc-components
+	url = https://github.com/Minres/SystemC-Components.git
+	branch = develop
