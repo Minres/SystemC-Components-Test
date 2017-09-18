@@ -24,9 +24,10 @@ void test_initiator::run() {
     tlm::tlm_generic_payload gp;
     std::array<uint8_t, 4> data;
     gp.set_command(tlm::TLM_READ_COMMAND);
-    gp.set_address(0);
+    gp.set_address(0x10012000);
     gp.set_data_ptr(data.data());
     gp.set_data_length(data.size());
+    gp.set_streaming_width(4);
     sc_core::sc_time delay;
     intor->b_transport(gp, delay);
     wait(10, sc_core::SC_NS);
