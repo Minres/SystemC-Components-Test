@@ -22,6 +22,40 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(warnings "/W4 /WX /EHsc")
 endif()
 
+# This line finds the boost lib and headers. 
+set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
+find_package(Boost COMPONENTS program_options system thread REQUIRED)
+
+# set-up SystemC and SCV
+find_package(SystemC)
+if(SystemC_FOUND)
+    add_definitions(-DWITH_SYSTEMC)
+    include_directories(${SystemC_INCLUDE_DIRS})
+    link_directories(${SystemC_LIBRARY_DIRS}
+)
+else()
+    message( FATAL_ERROR "SystemC library not found." )
+endif()
+
+if(SCV_FOUND)   
+    add_definitions(-DWITH_SCV)
+    link_directories(${SCV_LIBRARY_DIRS})
+endif(SCV_FOUND)
+
+
 add_subdirectory(sc-components)
 add_subdirectory(examples)
 #add_subdirectory(test)
+
+#
+# SYSTEM PACKAGING (RPM, TGZ, ...)
+# _____________________________________________________________________________
+
+#include(CPackConfig)
+
+#
+# CMAKE PACKAGING (for other CMake projects to use this one easily)
+# _____________________________________________________________________________
+
+#include(PackageConfigurator)
+
