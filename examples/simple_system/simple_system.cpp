@@ -32,6 +32,7 @@ simple_system::simple_system(sc_core::sc_module_name nm)
 , NAMED(i_spi)
 , NAMED(i_gpio)
 , NAMED(s_clk)
+, NAMED(s_rst)
 {
     i_master.intor(i_router.target[0]);
     size_t i=0;
@@ -43,10 +44,17 @@ simple_system::simple_system(sc_core::sc_module_name nm)
     i_uart.clk_i(s_clk);
     i_spi.clk_i(s_clk);
     i_gpio.clk_i(s_clk);
-    s_clk.write(sc_core::sc_time(10, sc_core::SC_NS));
+    s_clk.write(10_ns);
+    i_gpio.rst_i(s_rst);
+    i_master.rst_i(s_rst);
+
+    SC_THREAD(gen_reset);
 }
 
-simple_system::~simple_system() {
+void simple_system::gen_reset() {
+    s_rst=true;
+    wait(10_ns);
+    s_rst=false;
 }
 
 } /* namespace sysc */

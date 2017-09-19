@@ -26,7 +26,6 @@ add_executable (simple_system
     sc_main.cpp
 )
 
-
 # Link the executable to the sc_components library. Since the sc_components library has
 # public include directories we will use those link directories when building
 # simple_system

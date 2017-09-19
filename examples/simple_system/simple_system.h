@@ -37,15 +37,19 @@ namespace sysc {
 
 class simple_system: public sc_core::sc_module {
 public:
+    SC_HAS_PROCESS(simple_system);
+
     test_initiator i_master;
     router<> i_router;
     uart i_uart;
     spi i_spi;
     gpio i_gpio;
     sc_core::sc_signal<sc_core::sc_time> s_clk;
+    sc_core::sc_signal<bool> s_rst;
 
     simple_system(sc_core::sc_module_name nm);
-    virtual ~simple_system();
+protected:
+    void gen_reset();
 
 #include "gen/e300_plat_t.h"
 };

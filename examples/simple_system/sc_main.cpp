@@ -22,8 +22,11 @@
 
 #include "simple_system.h"
 #include <sysc/tracer.h>
-#include "sysc/scv_tr_db.h"
+#include <sysc/scv_tr_db.h>
+#include <sr_report/sr_report.h>
 #include <boost/program_options.hpp>
+#include <sysc/report.h>
+#include <sstream>
 
 using namespace sysc;
 namespace po = boost::program_options;
@@ -35,6 +38,8 @@ const size_t ERROR_UNHANDLED_EXCEPTION = 2;
 } // namespace
 
 int sc_main(int argc, char* argv[]){
+//    sc_report_handler::set_handler(my_report_handler);
+    sysc::Logger::reporting_level()=log::DEBUG;
     ///////////////////////////////////////////////////////////////////////////
     // CLI argument parsing
     ///////////////////////////////////////////////////////////////////////////
@@ -66,11 +71,13 @@ int sc_main(int argc, char* argv[]){
     // instantiate top level
     ///////////////////////////////////////////////////////////////////////////
     simple_system i_simple_system("i_simple_system");
+    //sr_report_handler::add_sc_object_to_filter(&i_simple_system.i_master, sc_core::SC_WARNING, sc_core::SC_MEDIUM);
+
     ///////////////////////////////////////////////////////////////////////////
     // run simulation
     ///////////////////////////////////////////////////////////////////////////
     sc_start(sc_core::sc_time(100, sc_core::SC_NS));
-
+    if(!sc_end_of_simulation_invoked()) sc_stop();
     return 0;
 }
 

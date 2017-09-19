@@ -19,8 +19,8 @@
 
 #include <util/bit_field.h>
 #include <sysc/register.h>
-#include <sysc/tlmtarget.h>
 #include <sysc/utilities.h>
+#include <sysc/tlm_target.h>
 
 namespace sysc {
 

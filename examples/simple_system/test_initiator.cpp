@@ -21,6 +21,7 @@
  */
 
 #include "test_initiator.h"
+#include <sr_report/sr_report.h>
 #include <sysc/utilities.h>
 #include <array>
 
@@ -29,15 +30,19 @@ namespace sysc {
 test_initiator::test_initiator(sc_core::sc_module_name nm)
 : sc_core::sc_module(nm)
 , NAMED(intor)
+, NAMED(rst_i)
 {
     SC_THREAD(run);
 
 }
 
 void test_initiator::run() {
-    wait(10, sc_core::SC_NS);
+    if(rst_i.read()==false) wait(rst_i.posedge_event());
+    wait(rst_i.negedge_event());
+    wait(10_ns);
     tlm::tlm_generic_payload gp;
     std::array<uint8_t, 4> data;
+    srInfo()("group", "comm")("read access");
     gp.set_command(tlm::TLM_READ_COMMAND);
     gp.set_address(0x10012000);
     gp.set_data_ptr(data.data());
@@ -45,7 +50,13 @@ void test_initiator::run() {
     gp.set_streaming_width(4);
     sc_core::sc_time delay;
     intor->b_transport(gp, delay);
-    wait(10, sc_core::SC_NS);
+    wait(10_ns);
+    srWarn()("group", "comm")("write access");
+    gp.set_command(tlm::TLM_WRITE_COMMAND);
+    gp.set_address(0x10012000);
+    data[0]=0xA5;
+    intor->b_transport(gp, delay);
+    wait(10_ns);
 }
 
 } /* namespace sysc */

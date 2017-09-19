@@ -23,8 +23,8 @@
 #ifndef _TEST_INITIATOR_H_
 #define _TEST_INITIATOR_H_
 
+#include <sysc/utilities.h>
 #include <tlm_utils/simple_initiator_socket.h>
-#include <systemc>
 
 namespace sysc {
 
@@ -33,6 +33,7 @@ public:
     SC_HAS_PROCESS(test_initiator);
     tlm_utils::simple_initiator_socket<test_initiator, 32> intor;
 
+    sc_core::sc_in<bool> rst_i;
     test_initiator(sc_core::sc_module_name nm);
 protected:
     void run();

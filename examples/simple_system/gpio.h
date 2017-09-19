@@ -17,18 +17,24 @@
 #ifndef _GPIO_H_
 #define _GPIO_H_
 
-#include "gen/gpio_regs.h"
+#include <sysc/tlm_target.h>
 
 namespace sysc {
 
-class gpio: public gpio_regs<> {
+class gpio_regs;
+
+class gpio: public sc_core::sc_module, public tlm_target<> {
 public:
     SC_HAS_PROCESS(gpio);
     sc_core::sc_in<sc_core::sc_time> clk_i;
+    sc_core::sc_in<bool>             rst_i;
     gpio(sc_core::sc_module_name nm);
     virtual ~gpio();
 protected:
     void clock_cb();
+    void reset_cb();
+    sc_core::sc_time clk;
+    std::unique_ptr<gpio_regs> regs;
 };
 
 } /* namespace sysc */
