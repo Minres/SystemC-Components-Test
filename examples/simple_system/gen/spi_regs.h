@@ -1,35 +1,52 @@
-/*******************************************************************************
- * Copyright 2017 eyck@minres.com
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License.  You may obtain a copy
- * of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
- * License for the specific language governing permissions and limitations under
- * the License.
- ******************************************************************************/
+////////////////////////////////////////////////////////////////////////////////
+// Copyright (C) 2017, MINRES Technologies GmbH
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright notice,
+//    this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright notice,
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its contributors
+//    may be used to endorse or promote products derived from this software
+//    without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+// POSSIBILITY OF SUCH DAMAGE.
+//
+// Created on: Tue Sep 19 18:02:09 CEST 2017
+//             *      spi_regs.h Author: <RDL Generator>
+//
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef _SPI_REGS_H_
 #define _SPI_REGS_H_
 
+#include <sysc/utilities.h>
 #include <util/bit_field.h>
 #include <sysc/register.h>
-#include <sysc/utilities.h>
 #include <sysc/tlm_target.h>
 
 namespace sysc {
 
-template<unsigned BUSWIDTH=32>
 class spi_regs :
         public sc_core::sc_module,
-        public sysc::tlm_target<BUSWIDTH>,
         public sysc::resetable
- {
+{
 protected:
     // storage declarations
     BEGIN_BF_DECL(sckdiv_t, uint32_t);
@@ -127,18 +144,19 @@ protected:
     sysc::sc_register<typename ie_t::StorageType> ie;
     sysc::sc_register<typename ip_t::StorageType> ip;
     
+public:
     spi_regs(sc_core::sc_module_name nm);
-protected:
-    sc_core::sc_time clk;
+
+    template<unsigned BUSWIDTH=32>
+    void registerResources(sysc::tlm_target<BUSWIDTH>& target);
 };
+}
 //////////////////////////////////////////////////////////////////////////////
 // member functions
 //////////////////////////////////////////////////////////////////////////////
 
-template<unsigned BUSWIDTH>
-spi_regs<BUSWIDTH>::spi_regs(sc_core::sc_module_name nm)
+inline sysc::spi_regs::spi_regs(sc_core::sc_module_name nm)
 : sc_core::sc_module(nm)
-, sysc::tlm_target<BUSWIDTH>(clk)
 , NAMED(sckdiv, r_sckdiv, 0, *this)
 , NAMED(sckmode, r_sckmode, 0, *this)
 , NAMED(csid, r_csid, 0, *this)
@@ -156,23 +174,26 @@ spi_regs<BUSWIDTH>::spi_regs(sc_core::sc_module_name nm)
 , NAMED(ie, r_ie, 0, *this)
 , NAMED(ip, r_ip, 0, *this)
 {
-    this->socket_map.addEntry(&sckdiv, 0x0UL, 0x4UL);
-    this->socket_map.addEntry(&sckmode, 0x4UL, 0x4UL);
-    this->socket_map.addEntry(&csid, 0x10UL, 0x4UL);
-    this->socket_map.addEntry(&csdef, 0x14UL, 0x4UL);
-    this->socket_map.addEntry(&csmode, 0x18UL, 0x4UL);
-    this->socket_map.addEntry(&delay0, 0x28UL, 0x4UL);
-    this->socket_map.addEntry(&delay1, 0x2cUL, 0x4UL);
-    this->socket_map.addEntry(&fmt, 0x40UL, 0x4UL);
-    this->socket_map.addEntry(&txdata, 0x48UL, 0x4UL);
-    this->socket_map.addEntry(&rxdata, 0x4cUL, 0x4UL);
-    this->socket_map.addEntry(&txmark, 0x50UL, 0x4UL);
-    this->socket_map.addEntry(&rxmark, 0x54UL, 0x4UL);
-    this->socket_map.addEntry(&fctrl, 0x60UL, 0x4UL);
-    this->socket_map.addEntry(&ffmt, 0x64UL, 0x4UL);
-    this->socket_map.addEntry(&ie, 0x70UL, 0x4UL);
-    this->socket_map.addEntry(&ip, 0x74UL, 0x4UL);
 }
- 
+
+template<unsigned BUSWIDTH>
+inline void sysc::spi_regs::registerResources(sysc::tlm_target<BUSWIDTH>& target) {
+    target.addResource(sckdiv, 0x0UL, 0x4UL);
+    target.addResource(sckmode, 0x4UL, 0x4UL);
+    target.addResource(csid, 0x10UL, 0x4UL);
+    target.addResource(csdef, 0x14UL, 0x4UL);
+    target.addResource(csmode, 0x18UL, 0x4UL);
+    target.addResource(delay0, 0x28UL, 0x4UL);
+    target.addResource(delay1, 0x2cUL, 0x4UL);
+    target.addResource(fmt, 0x40UL, 0x4UL);
+    target.addResource(txdata, 0x48UL, 0x4UL);
+    target.addResource(rxdata, 0x4cUL, 0x4UL);
+    target.addResource(txmark, 0x50UL, 0x4UL);
+    target.addResource(rxmark, 0x54UL, 0x4UL);
+    target.addResource(fctrl, 0x60UL, 0x4UL);
+    target.addResource(ffmt, 0x64UL, 0x4UL);
+    target.addResource(ie, 0x70UL, 0x4UL);
+    target.addResource(ip, 0x74UL, 0x4UL);
 }
+
 #endif // _SPI_REGS_H_

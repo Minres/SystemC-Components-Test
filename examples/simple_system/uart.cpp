@@ -15,15 +15,23 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "uart.h"
+#include "gen/uart_regs.h"
+#include "sysc/utilities.h"
 
 namespace sysc {
 
 uart::uart(sc_core::sc_module_name nm)
-: uart_regs<>(nm)
+: sc_core::sc_module(nm)
+, tlm_target<>(clk)
 , NAMED(clk_i)
+, NAMED(rst_i)
+, NAMEDD(uart_regs, regs)
 {
+    regs->registerResources(*this);
     SC_METHOD(clock_cb);
     sensitive<<clk_i;
+    SC_METHOD(reset_cb);
+    sensitive<<rst_i;
 }
 
 uart::~uart() {
@@ -31,6 +39,13 @@ uart::~uart() {
 
 void uart::clock_cb() {
     this->clk=clk_i.read();
+}
+
+void uart::reset_cb() {
+    if(rst_i.read())
+        regs->reset_start();
+    else
+        regs->reset_stop();
 }
 
 } /* namespace sysc */

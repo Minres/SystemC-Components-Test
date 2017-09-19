@@ -17,18 +17,24 @@
 #ifndef _UART_H_
 #define _UART_H_
 
-#include "gen/uart_regs.h"
+#include <sysc/tlm_target.h>
 
 namespace sysc {
 
-class uart: public uart_regs<> {
+class uart_regs;
+
+class uart: public sc_core::sc_module, public tlm_target<> {
 public:
     SC_HAS_PROCESS(uart);
     sc_core::sc_in<sc_core::sc_time> clk_i;
+    sc_core::sc_in<bool>             rst_i;
     uart(sc_core::sc_module_name nm);
     virtual ~uart();
 protected:
     void clock_cb();
+    void reset_cb();
+    sc_core::sc_time clk;
+    std::unique_ptr<uart_regs> regs;
 };
 
 } /* namespace sysc */

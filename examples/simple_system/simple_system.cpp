@@ -45,6 +45,9 @@ simple_system::simple_system(sc_core::sc_module_name nm)
     i_spi.clk_i(s_clk);
     i_gpio.clk_i(s_clk);
     s_clk.write(10_ns);
+
+    i_uart.rst_i(s_rst);
+    i_spi.rst_i(s_rst);
     i_gpio.rst_i(s_rst);
     i_master.rst_i(s_rst);
 

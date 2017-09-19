@@ -17,18 +17,24 @@
 #ifndef _SPI_H_
 #define _SPI_H_
 
-#include "gen/spi_regs.h"
+#include <sysc/tlm_target.h>
 
 namespace sysc {
 
-class spi: public spi_regs<> {
+class spi_regs;
+
+class spi: public sc_core::sc_module, public tlm_target<> {
 public:
     SC_HAS_PROCESS(spi);
     sc_core::sc_in<sc_core::sc_time> clk_i;
+    sc_core::sc_in<bool>             rst_i;
     spi(sc_core::sc_module_name nm);
     virtual ~spi();
 protected:
     void clock_cb();
+    void reset_cb();
+    sc_core::sc_time clk;
+    std::unique_ptr<spi_regs> regs;
 };
 
 } /* namespace sysc */
