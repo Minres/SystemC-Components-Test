@@ -24,6 +24,7 @@ gpio::gpio(sc_core::sc_module_name nm)
 : sc_core::sc_module(nm)
 , tlm_target<>(clk)
 , NAMED(clk_i)
+, NAMED(rst_i)
 , NAMEDD(gpio_regs, regs)
 {
     regs->registerResources(*this);
