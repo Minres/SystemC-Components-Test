@@ -13,49 +13,30 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-/*
- * simplesystem.h
- *
- *  Created on: 17.09.2017
- *      Author: eyck@minres.com
- */
 
-#ifndef SIMPLESYSTEM_H_
-#define SIMPLESYSTEM_H_
+#ifndef _PLIC_H_
+#define _PLIC_H_
 
-#include "uart.h"
-#include "spi.h"
-#include "gpio.h"
-#include "plic.h"
-
-#include "test_initiator.h"
-#include <sysc/router.h>
-#include <sysc/kernel/sc_module.h>
-#include <array>
-
+#include <sysc/tlm_target.h>
 
 namespace sysc {
 
-class simple_system: public sc_core::sc_module {
+class plic_regs;
+
+class plic: public sc_core::sc_module, public tlm_target<> {
 public:
-    SC_HAS_PROCESS(simple_system);
-
-    test_initiator i_master;
-    router<> i_router;
-    uart i_uart;
-    spi i_spi;
-    gpio i_gpio;
-    plic i_plic;
-    sc_core::sc_signal<sc_core::sc_time> s_clk;
-    sc_core::sc_signal<bool> s_rst;
-
-    simple_system(sc_core::sc_module_name nm);
+    SC_HAS_PROCESS(plic);
+    sc_core::sc_in<sc_core::sc_time> clk_i;
+    sc_core::sc_in<bool>             rst_i;
+    plic(sc_core::sc_module_name nm);
+    virtual ~plic();
 protected:
-    void gen_reset();
-
-#include "gen/e300_plat_t.h"
+    void clock_cb();
+    void reset_cb();
+    sc_core::sc_time clk;
+    std::unique_ptr<plic_regs> regs;
 };
 
 } /* namespace sysc */
 
-#endif /* SIMPLESYSTEM_H_ */
+#endif /* _PLIC_H_ */

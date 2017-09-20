@@ -27,28 +27,31 @@ namespace sysc {
 simple_system::simple_system(sc_core::sc_module_name nm)
 : sc_core::sc_module(nm)
 , NAMED(i_master)
-, NAMED(i_router, 3, 1)
+, NAMED(i_router, 4, 1)
 , NAMED(i_uart)
 , NAMED(i_spi)
 , NAMED(i_gpio)
+, NAMED(i_plic)
 , NAMED(s_clk)
 , NAMED(s_rst)
 {
     i_master.intor(i_router.target[0]);
     size_t i=0;
     for(const auto& e: e300_plat_map){
-        i_router.initiator[i](e.target->socket);
+        i_router.initiator.at(i)(e.target->socket);
         i_router.add_target_range(i, e.start, e.size);
         i++;
     }
     i_uart.clk_i(s_clk);
     i_spi.clk_i(s_clk);
     i_gpio.clk_i(s_clk);
+    i_plic.clk_i(s_clk);
     s_clk.write(10_ns);
 
     i_uart.rst_i(s_rst);
     i_spi.rst_i(s_rst);
     i_gpio.rst_i(s_rst);
+    i_plic.rst_i(s_rst);
     i_master.rst_i(s_rst);
 
     SC_THREAD(gen_reset);

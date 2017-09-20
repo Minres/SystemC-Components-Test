@@ -29,12 +29,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 // Created on: Wed Sep 20 11:47:24 CEST 2017
-//             *      uart_regs.h Author: <RDL Generator>
+//             *      plic_regs.h Author: <RDL Generator>
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef _UART_REGS_H_
-#define _UART_REGS_H_
+#ifndef _PLIC_REGS_H_
+#define _PLIC_REGS_H_
 
 #include <sysc/utilities.h>
 #include <util/bit_field.h>
@@ -43,60 +43,36 @@
 
 namespace sysc {
 
-class uart_regs :
+class plic_regs :
         public sc_core::sc_module,
         public sysc::resetable
 {
 protected:
     // storage declarations
-    BEGIN_BF_DECL(txdata_t, uint32_t);
-        BF_FIELD(data, 0, 8);
-        BF_FIELD(full, 31, 1);
-    END_BF_DECL() r_txdata;
+    BEGIN_BF_DECL(priority_t, uint32_t);
+        BF_FIELD(priority, 0, 3);
+    END_BF_DECL();
+    std::array<priority_t, 255> r_priority;
     
-    BEGIN_BF_DECL(rxdata_t, uint32_t);
-        BF_FIELD(data, 0, 8);
-        BF_FIELD(empty, 31, 1);
-    END_BF_DECL() r_rxdata;
+    uint32_t r_pending;
     
-    BEGIN_BF_DECL(txctrl_t, uint32_t);
-        BF_FIELD(txen, 0, 1);
-        BF_FIELD(nstop, 1, 1);
-        BF_FIELD(reserved, 2, 14);
-        BF_FIELD(txcnt, 16, 3);
-    END_BF_DECL() r_txctrl;
+    uint32_t r_enabled;
     
-    BEGIN_BF_DECL(rxctrl_t, uint32_t);
-        BF_FIELD(rxen, 0, 1);
-        BF_FIELD(reserved, 1, 15);
-        BF_FIELD(rxcnt, 16, 3);
-    END_BF_DECL() r_rxctrl;
+    BEGIN_BF_DECL(threshold_t, uint32_t);
+        BF_FIELD(threshold, 0, 3);
+    END_BF_DECL() r_threshold;
     
-    BEGIN_BF_DECL(ie_t, uint32_t);
-        BF_FIELD(txwm, 0, 1);
-        BF_FIELD(rxwm, 1, 1);
-    END_BF_DECL() r_ie;
-    
-    BEGIN_BF_DECL(ip_t, uint32_t);
-        BF_FIELD(txwm, 0, 1);
-        BF_FIELD(rxwm, 1, 1);
-    END_BF_DECL() r_ip;
-    
-    BEGIN_BF_DECL(div_t, uint32_t);
-        BF_FIELD(div, 0, 16);
-    END_BF_DECL() r_div;
+    uint32_t r_claim_complete;
     
     // register declarations
-    sysc::sc_register<txdata_t> txdata;
-    sysc::sc_register<rxdata_t> rxdata;
-    sysc::sc_register<txctrl_t> txctrl;
-    sysc::sc_register<rxctrl_t> rxctrl;
-    sysc::sc_register<ie_t>     ie;
-    sysc::sc_register<ip_t>     ip;
-    sysc::sc_register<div_t>    div;
+    sysc::sc_register_field<priority_t, 255> priority;
+    sysc::sc_register<uint32_t> pending;
+    sysc::sc_register<uint32_t> enabled;
+    sysc::sc_register<threshold_t> threshold;
+    sysc::sc_register<uint32_t> claim_complete;
     
 public:
-    uart_regs(sc_core::sc_module_name nm);
+    plic_regs(sc_core::sc_module_name nm);
 
     template<unsigned BUSWIDTH=32>
     void registerResources(sysc::tlm_target<BUSWIDTH>& target);
@@ -106,27 +82,23 @@ public:
 // member functions
 //////////////////////////////////////////////////////////////////////////////
 
-inline sysc::uart_regs::uart_regs(sc_core::sc_module_name nm)
+inline sysc::plic_regs::plic_regs(sc_core::sc_module_name nm)
 : sc_core::sc_module(nm)
-, NAMED(txdata, r_txdata, 0, *this)
-, NAMED(rxdata, r_rxdata, 0, *this)
-, NAMED(txctrl, r_txctrl, 0, *this)
-, NAMED(rxctrl, r_rxctrl, 0, *this)
-, NAMED(ie, r_ie, 0, *this)
-, NAMED(ip, r_ip, 0, *this)
-, NAMED(div, r_div, 0, *this)
+, NAMED(priority, r_priority, 0, *this)
+, NAMED(pending, r_pending, 0, *this)
+, NAMED(enabled, r_enabled, 0, *this)
+, NAMED(threshold, r_threshold, 0, *this)
+, NAMED(claim_complete, r_claim_complete, 0, *this)
 {
 }
 
 template<unsigned BUSWIDTH>
-inline void sysc::uart_regs::registerResources(sysc::tlm_target<BUSWIDTH>& target) {
-    target.addResource(txdata, 0x0UL);
-    target.addResource(rxdata, 0x4UL);
-    target.addResource(txctrl, 0x8UL);
-    target.addResource(rxctrl, 0xcUL);
-    target.addResource(ie, 0x10UL);
-    target.addResource(ip, 0x14UL);
-    target.addResource(div, 0x18UL);
+inline void sysc::plic_regs::registerResources(sysc::tlm_target<BUSWIDTH>& target) {
+    target.addResource(priority, 0x4UL);
+    target.addResource(pending, 0x1000UL);
+    target.addResource(enabled, 0x2000UL);
+    target.addResource(threshold, 0xc200000UL);
+    target.addResource(claim_complete, 0xc200004UL);
 }
 
-#endif // _UART_REGS_H_
+#endif // _PLIC_REGS_H_

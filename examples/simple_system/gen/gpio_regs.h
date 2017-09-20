@@ -28,7 +28,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// Created on: Tue Sep 19 18:02:10 CEST 2017
+// Created on: Wed Sep 20 11:47:24 CEST 2017
 //             *      gpio_regs.h Author: <RDL Generator>
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -137,23 +137,23 @@ inline sysc::gpio_regs::gpio_regs(sc_core::sc_module_name nm)
 
 template<unsigned BUSWIDTH>
 inline void sysc::gpio_regs::registerResources(sysc::tlm_target<BUSWIDTH>& target) {
-    target.addResource(value, 0x0UL, 0x4UL);
-    target.addResource(input_en, 0x4UL, 0x4UL);
-    target.addResource(output_en, 0x8UL, 0x4UL);
-    target.addResource(port, 0xcUL, 0x4UL);
-    target.addResource(pue, 0x10UL, 0x4UL);
-    target.addResource(ds, 0x14UL, 0x4UL);
-    target.addResource(rise_ie, 0x18UL, 0x4UL);
-    target.addResource(rise_ip, 0x1cUL, 0x4UL);
-    target.addResource(fall_ie, 0x20UL, 0x4UL);
-    target.addResource(fall_ip, 0x24UL, 0x4UL);
-    target.addResource(high_ie, 0x28UL, 0x4UL);
-    target.addResource(high_ip, 0x2cUL, 0x4UL);
-    target.addResource(low_ie, 0x30UL, 0x4UL);
-    target.addResource(low_ip, 0x34UL, 0x4UL);
-    target.addResource(iof_en, 0x38UL, 0x4UL);
-    target.addResource(iof_sel, 0x3cUL, 0x4UL);
-    target.addResource(out_xor, 0x40UL, 0x4UL);
+    target.addResource(value, 0x0UL);
+    target.addResource(input_en, 0x4UL);
+    target.addResource(output_en, 0x8UL);
+    target.addResource(port, 0xcUL);
+    target.addResource(pue, 0x10UL);
+    target.addResource(ds, 0x14UL);
+    target.addResource(rise_ie, 0x18UL);
+    target.addResource(rise_ip, 0x1cUL);
+    target.addResource(fall_ie, 0x20UL);
+    target.addResource(fall_ip, 0x24UL);
+    target.addResource(high_ie, 0x28UL);
+    target.addResource(high_ip, 0x2cUL);
+    target.addResource(low_ie, 0x30UL);
+    target.addResource(low_ip, 0x34UL);
+    target.addResource(iof_en, 0x38UL);
+    target.addResource(iof_sel, 0x3cUL);
+    target.addResource(out_xor, 0x40UL);
 }
 
 #endif // _GPIO_REGS_H_

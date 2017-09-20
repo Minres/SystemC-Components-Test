@@ -28,7 +28,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// Created on: Tue Sep 19 18:02:09 CEST 2017
+// Created on: Wed Sep 20 11:47:24 CEST 2017
 //             *      spi_regs.h Author: <RDL Generator>
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -127,22 +127,22 @@ protected:
     END_BF_DECL() r_ip;
     
     // register declarations
-    sysc::sc_register<typename sckdiv_t::StorageType> sckdiv;
-    sysc::sc_register<typename sckmode_t::StorageType> sckmode;
+    sysc::sc_register<sckdiv_t> sckdiv;
+    sysc::sc_register<sckmode_t> sckmode;
     sysc::sc_register<uint32_t> csid;
     sysc::sc_register<uint32_t> csdef;
-    sysc::sc_register<typename csmode_t::StorageType> csmode;
-    sysc::sc_register<typename delay0_t::StorageType> delay0;
-    sysc::sc_register<typename delay1_t::StorageType> delay1;
-    sysc::sc_register<typename fmt_t::StorageType> fmt;
-    sysc::sc_register<typename txdata_t::StorageType> txdata;
-    sysc::sc_register<typename rxdata_t::StorageType> rxdata;
-    sysc::sc_register<typename txmark_t::StorageType> txmark;
-    sysc::sc_register<typename rxmark_t::StorageType> rxmark;
-    sysc::sc_register<typename fctrl_t::StorageType> fctrl;
-    sysc::sc_register<typename ffmt_t::StorageType> ffmt;
-    sysc::sc_register<typename ie_t::StorageType> ie;
-    sysc::sc_register<typename ip_t::StorageType> ip;
+    sysc::sc_register<csmode_t> csmode;
+    sysc::sc_register<delay0_t> delay0;
+    sysc::sc_register<delay1_t> delay1;
+    sysc::sc_register<fmt_t> fmt;
+    sysc::sc_register<txdata_t> txdata;
+    sysc::sc_register<rxdata_t> rxdata;
+    sysc::sc_register<txmark_t> txmark;
+    sysc::sc_register<rxmark_t> rxmark;
+    sysc::sc_register<fctrl_t> fctrl;
+    sysc::sc_register<ffmt_t> ffmt;
+    sysc::sc_register<ie_t> ie;
+    sysc::sc_register<ip_t> ip;
     
 public:
     spi_regs(sc_core::sc_module_name nm);
@@ -178,22 +178,22 @@ inline sysc::spi_regs::spi_regs(sc_core::sc_module_name nm)
 
 template<unsigned BUSWIDTH>
 inline void sysc::spi_regs::registerResources(sysc::tlm_target<BUSWIDTH>& target) {
-    target.addResource(sckdiv, 0x0UL, 0x4UL);
-    target.addResource(sckmode, 0x4UL, 0x4UL);
-    target.addResource(csid, 0x10UL, 0x4UL);
-    target.addResource(csdef, 0x14UL, 0x4UL);
-    target.addResource(csmode, 0x18UL, 0x4UL);
-    target.addResource(delay0, 0x28UL, 0x4UL);
-    target.addResource(delay1, 0x2cUL, 0x4UL);
-    target.addResource(fmt, 0x40UL, 0x4UL);
-    target.addResource(txdata, 0x48UL, 0x4UL);
-    target.addResource(rxdata, 0x4cUL, 0x4UL);
-    target.addResource(txmark, 0x50UL, 0x4UL);
-    target.addResource(rxmark, 0x54UL, 0x4UL);
-    target.addResource(fctrl, 0x60UL, 0x4UL);
-    target.addResource(ffmt, 0x64UL, 0x4UL);
-    target.addResource(ie, 0x70UL, 0x4UL);
-    target.addResource(ip, 0x74UL, 0x4UL);
+    target.addResource(sckdiv, 0x0UL);
+    target.addResource(sckmode, 0x4UL);
+    target.addResource(csid, 0x10UL);
+    target.addResource(csdef, 0x14UL);
+    target.addResource(csmode, 0x18UL);
+    target.addResource(delay0, 0x28UL);
+    target.addResource(delay1, 0x2cUL);
+    target.addResource(fmt, 0x40UL);
+    target.addResource(txdata, 0x48UL);
+    target.addResource(rxdata, 0x4cUL);
+    target.addResource(txmark, 0x50UL);
+    target.addResource(rxmark, 0x54UL);
+    target.addResource(fctrl, 0x60UL);
+    target.addResource(ffmt, 0x64UL);
+    target.addResource(ie, 0x70UL);
+    target.addResource(ip, 0x74UL);
 }
 
 #endif // _SPI_REGS_H_

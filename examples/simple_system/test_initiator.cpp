@@ -44,7 +44,8 @@ void test_initiator::run() {
     std::array<uint8_t, 4> data;
     srInfo()("group", "comm")("read access");
     gp.set_command(tlm::TLM_READ_COMMAND);
-    gp.set_address(0x10012000);
+//    gp.set_address(0x10012000);
+    gp.set_address(0xc000004);
     gp.set_data_ptr(data.data());
     gp.set_data_length(data.size());
     gp.set_streaming_width(4);

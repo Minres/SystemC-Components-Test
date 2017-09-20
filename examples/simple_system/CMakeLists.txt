@@ -18,6 +18,7 @@ cmake_minimum_required (VERSION 2.8.12)
 # Add executable called "simple_system" that is built from the source files
 # "scv_tr_recording_example.cpp". The extensions are automatically found.
 add_executable (simple_system 
+    plic.cpp
     uart.cpp
     spi.cpp
     gpio.cpp
