@@ -28,7 +28,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// Created on: Wed Sep 20 11:47:24 CEST 2017
+// Created on: Wed Sep 20 22:30:45 CEST 2017
 //             *      plic_regs.h Author: <RDL Generator>
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ protected:
     // storage declarations
     BEGIN_BF_DECL(priority_t, uint32_t);
         BF_FIELD(priority, 0, 3);
-    END_BF_DECL();
+    END_BF_DECL() ;
     std::array<priority_t, 255> r_priority;
     
     uint32_t r_pending;
@@ -65,7 +65,7 @@ protected:
     uint32_t r_claim_complete;
     
     // register declarations
-    sysc::sc_register_field<priority_t, 255> priority;
+    sysc::sc_register_indexed<priority_t, 255> priority;
     sysc::sc_register<uint32_t> pending;
     sysc::sc_register<uint32_t> enabled;
     sysc::sc_register<threshold_t> threshold;

@@ -28,7 +28,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// Created on: Wed Sep 20 11:47:24 CEST 2017
+// Created on: Wed Sep 20 22:30:45 CEST 2017
 //             *      spi_regs.h Author: <RDL Generator>
 //
 ////////////////////////////////////////////////////////////////////////////////

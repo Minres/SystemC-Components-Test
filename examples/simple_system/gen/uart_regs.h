@@ -28,7 +28,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-// Created on: Wed Sep 20 11:47:24 CEST 2017
+// Created on: Wed Sep 20 22:30:45 CEST 2017
 //             *      uart_regs.h Author: <RDL Generator>
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,9 +91,9 @@ protected:
     sysc::sc_register<rxdata_t> rxdata;
     sysc::sc_register<txctrl_t> txctrl;
     sysc::sc_register<rxctrl_t> rxctrl;
-    sysc::sc_register<ie_t>     ie;
-    sysc::sc_register<ip_t>     ip;
-    sysc::sc_register<div_t>    div;
+    sysc::sc_register<ie_t> ie;
+    sysc::sc_register<ip_t> ip;
+    sysc::sc_register<div_t> div;
     
 public:
     uart_regs(sc_core::sc_module_name nm);
