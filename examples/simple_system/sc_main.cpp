@@ -23,7 +23,7 @@
 #include "simple_system.h"
 #include <sysc/tracer.h>
 #include <sysc/scv_tr_db.h>
-#include <sr_report/sr_report.h>
+#include <sysc/report.h>
 #include <boost/program_options.hpp>
 #include <sysc/report.h>
 #include <sstream>
@@ -38,8 +38,14 @@ const size_t ERROR_UNHANDLED_EXCEPTION = 2;
 } // namespace
 
 int sc_main(int argc, char* argv[]){
+
+	// Environment adaptations
+	putenv(const_cast<char*>("SC_SIGNAL_WRITE_CHECK=DISABLE"));
+
 //    sc_report_handler::set_handler(my_report_handler);
     sysc::Logger::reporting_level()=log::DEBUG;
+    // todo: add module-name to log-file
+
     ///////////////////////////////////////////////////////////////////////////
     // CLI argument parsing
     ///////////////////////////////////////////////////////////////////////////
@@ -67,6 +73,8 @@ int sc_main(int argc, char* argv[]){
     // set up tracing & transaction recording
     ///////////////////////////////////////////////////////////////////////////
     sysc::tracer trace("simple_system", sysc::tracer::TEXT, vm.count("trace"));
+    // todo: fix displayed clock period in VCD
+
     ///////////////////////////////////////////////////////////////////////////
     // instantiate top level
     ///////////////////////////////////////////////////////////////////////////
@@ -76,8 +84,13 @@ int sc_main(int argc, char* argv[]){
     ///////////////////////////////////////////////////////////////////////////
     // run simulation
     ///////////////////////////////////////////////////////////////////////////
-    sc_start(sc_core::sc_time(100, sc_core::SC_NS));
-    if(!sc_end_of_simulation_invoked()) sc_stop();
+    sc_start(sc_core::sc_time(1, sc_core::SC_MS));
+    // todo: provide end-of-simulation macros
+
+    if(!sc_core::sc_end_of_simulation_invoked()) {
+        LOG(logging::ERROR) << "simulation timed out";
+    	sc_stop();
+    }
     return 0;
 }
 

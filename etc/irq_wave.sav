@@ -1,0 +1,60 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Fri Sep 22 20:16:21 2017
+[*]
+[dumpfile] "/home/valid/project/minres2/SystemC-Components-Test/simple_system.vcd"
+[dumpfile_mtime] "Fri Sep 22 20:15:38 2017"
+[dumpfile_size] 69714
+[savefile] "/home/valid/project/minres2/SystemC-Components-Test/etc/irq_wave.sav"
+[timestart] 4
+[size] 1920 924
+[pos] -1 -1
+*-3.538420 30 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 397
+[signals_width] 422
+[sst_expanded] 1
+[sst_vpaned_height] 334
+@200
+-System signals
+@28
+SystemC.\i_simple_system.s_rst
+@24
+SystemC.\i_simple_system.s_clk[63:0]
+@28
+SystemC.\i_simple_system.s_core_interrupt
+SystemC.\i_simple_system.s_global_interrupts_0
+SystemC.\i_simple_system.s_global_interrupts_1
+SystemC.\i_simple_system.s_global_interrupts_2
+SystemC.\i_simple_system.s_global_interrupts_3
+SystemC.\i_simple_system.s_global_interrupts_4
+@200
+-Master
+@28
+SystemC.\i_simple_system.i_master.rst_i
+SystemC.\i_simple_system.i_master.core_interrupt_i
+@200
+-PLIC ports
+@24
+SystemC.\i_simple_system.i_plic.rst_i
+SystemC.\i_simple_system.i_plic.clk_i[63:0]
+@28
+SystemC.\i_simple_system.i_plic.global_interrupts_i_0
+SystemC.\i_simple_system.i_plic.global_interrupts_i_1
+SystemC.\i_simple_system.i_plic.global_interrupts_i_2
+SystemC.\i_simple_system.i_plic.global_interrupts_i_3
+SystemC.\i_simple_system.i_plic.global_interrupts_i_4
+@200
+-PLIC regs
+@22
+SystemC.\i_simple_system.i_plic.regs.enabled[31:0]
+SystemC.\i_simple_system.i_plic.regs.pending[31:0]
+@23
+SystemC.\i_simple_system.i_plic.regs.priority0[31:0]
+@22
+SystemC.\i_simple_system.i_plic.regs.priority1[31:0]
+SystemC.\i_simple_system.i_plic.regs.priority2[31:0]
+SystemC.\i_simple_system.i_plic.regs.priority3[31:0]
+SystemC.\i_simple_system.i_plic.regs.threshold[31:0]
+SystemC.\i_simple_system.i_plic.regs.claim_complete[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
