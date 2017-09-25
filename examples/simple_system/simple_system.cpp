@@ -34,14 +34,21 @@ simple_system::simple_system(sc_core::sc_module_name nm)
 , NAMED(i_plic)
 , NAMED(s_clk)
 , NAMED(s_rst)
+, NAMED(s_global_interrupts, 256)
+, NAMED(s_core_interrupt)
 {
+	// todo: discuss naming conventions (s_<signal> vs. <port>_i/_o) --> covnert into _s
+
+	// bus connections
     i_master.intor(i_router.target[0]);
     size_t i=0;
     for(const auto& e: e300_plat_map){
-        i_router.initiator.at(i)(e.target->socket);
+        i_router.initiator[i](e.target->socket);
         i_router.add_target_range(i, e.start, e.size);
         i++;
     }
+
+    // clock/reset connections
     i_uart.clk_i(s_clk);
     i_spi.clk_i(s_clk);
     i_gpio.clk_i(s_clk);
@@ -53,6 +60,12 @@ simple_system::simple_system(sc_core::sc_module_name nm)
     i_gpio.rst_i(s_rst);
     i_plic.rst_i(s_rst);
     i_master.rst_i(s_rst);
+
+    // interrupt connections
+    i_plic.core_interrupt_o(s_core_interrupt);
+    i_plic.global_interrupts_i.bind(s_global_interrupts);
+    i_master.global_interrupts_o(s_global_interrupts);
+    i_master.core_interrupt_i(s_core_interrupt);
 
     SC_THREAD(gen_reset);
 }

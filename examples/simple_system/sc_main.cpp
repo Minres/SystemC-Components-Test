@@ -89,7 +89,7 @@ int sc_main(int argc, char* argv[]){
 
     if(!sc_core::sc_end_of_simulation_invoked()) {
         LOG(logging::ERROR) << "simulation timed out";
-    	sc_stop();
+    	sc_core::sc_stop();
     }
     return 0;
 }

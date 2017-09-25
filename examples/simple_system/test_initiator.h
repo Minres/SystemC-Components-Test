@@ -32,11 +32,21 @@ class test_initiator: public sc_core::sc_module {
 public:
     SC_HAS_PROCESS(test_initiator);
     tlm_utils::simple_initiator_socket<test_initiator, 32> intor;
-
-    sc_core::sc_in<bool> rst_i;
+    sc_core::sc_vector<sc_core::sc_out<bool>>              global_interrupts_o;
+    sc_core::sc_in<bool>                                   core_interrupt_i;
+    sc_core::sc_in<bool>                                   rst_i;
     test_initiator(sc_core::sc_module_name nm);
 protected:
     void run();
+	void test_unique_irq();
+	void test_frequent_irq();
+	void test_parallel_irq();
+	void test_irq_stress();
+    void write_bus(std::uint32_t adr, std::uint32_t dat);
+    std::uint32_t read_bus(std::uint32_t adr);
+    void reg_check(std::uint32_t adr, std::uint32_t exp);
+
+    void core_irq_handler();
 };
 
 } /* namespace sysc */

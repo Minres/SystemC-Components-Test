@@ -47,7 +47,7 @@ class plic_regs :
         public sc_core::sc_module,
         public sysc::resetable
 {
-protected:
+public:
     // storage declarations
     BEGIN_BF_DECL(priority_t, uint32_t);
         BF_FIELD(priority, 0, 3);
@@ -71,7 +71,6 @@ protected:
     sysc::sc_register<threshold_t> threshold;
     sysc::sc_register<uint32_t> claim_complete;
     
-public:
     plic_regs(sc_core::sc_module_name nm);
 
     template<unsigned BUSWIDTH=32>
@@ -97,8 +96,8 @@ inline void sysc::plic_regs::registerResources(sysc::tlm_target<BUSWIDTH>& targe
     target.addResource(priority, 0x4UL);
     target.addResource(pending, 0x1000UL);
     target.addResource(enabled, 0x2000UL);
-    target.addResource(threshold, 0xc200000UL);
-    target.addResource(claim_complete, 0xc200004UL);
+    target.addResource(threshold, 0x00200000UL);
+    target.addResource(claim_complete, 0x00200004UL);
 }
 
 #endif // _PLIC_REGS_H_

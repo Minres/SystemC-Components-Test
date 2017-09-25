@@ -48,6 +48,8 @@ public:
     plic i_plic;
     sc_core::sc_signal<sc_core::sc_time> s_clk;
     sc_core::sc_signal<bool> s_rst;
+    sc_core::sc_vector<sc_core::sc_signal<bool>> s_global_interrupts;
+    sc_core::sc_signal<bool> s_core_interrupt;
 
     simple_system(sc_core::sc_module_name nm);
 protected:

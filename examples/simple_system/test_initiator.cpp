@@ -21,43 +21,266 @@
  */
 
 #include "test_initiator.h"
-#include <sr_report/sr_report.h>
+#include <sysc/report.h>
 #include <sysc/utilities.h>
 #include <array>
 
-namespace sysc {
+// todo: move into gen folder somewhere (adapt code-generator)
+#define PLIC_PRIO1_REG          0x0C000004
+#define PLIC_PRIO2_REG          0x0C000008
+#define PLIC_PRIO3_REG          0x0C00000C
+#define PLIC_PRIO4_REG          0x0C000010
+#define PLIC_PENDING_REG        0x0C001000
+#define PLIC_ENABLE_REG         0x0C002000
+#define PLIC_PRIO_TRESHOLD_REG  0x0C200000
+#define PLIC_CLAIM_COMPLETE_REG 0x0C200004
 
+namespace sysc {
 test_initiator::test_initiator(sc_core::sc_module_name nm)
 : sc_core::sc_module(nm)
 , NAMED(intor)
 , NAMED(rst_i)
+, NAMED(global_interrupts_o, 256)
+, NAMED(core_interrupt_i)
 {
-    SC_THREAD(run);
+	SC_THREAD(run);
 
+	SC_METHOD(core_irq_handler);
+	sensitive << core_interrupt_i;
+	dont_initialize();
 }
 
-void test_initiator::run() {
+void test_initiator::run()
+{
+	// wait for reset
     if(rst_i.read()==false) wait(rst_i.posedge_event());
     wait(rst_i.negedge_event());
     wait(10_ns);
+
+    // apply test-sequences
+	test_unique_irq();
+	test_frequent_irq();
+	test_parallel_irq();
+	test_irq_stress();
+
+	// todo: review irq sequences from FW point of view ... expected ???
+}
+
+void test_initiator::test_unique_irq()
+{
+
+	//// enable reg is not set
+	// -> irq to be ignored
+	// -> no core_interrupt
+	// -> no entry in pending reg
+
+    // generate interrupt pulse (note: 1 is lowest usable register)
+    global_interrupts_o[2].write(1);
+    wait(10_ns);
+    global_interrupts_o[2].write(0);
+    wait(10_ns);
+
+    reg_check(PLIC_PENDING_REG, 0x0);
+    wait(10_ns);
+    reg_check(PLIC_CLAIM_COMPLETE_REG, 0x0);
+    wait(10_ns);
+
+	//// enable reg is set, then
+	// -> pending bit change expected
+	// -> core_interrupt expected
+
+    uint32_t v = read_bus(PLIC_PRIO1_REG);
+    wait(10_ns);
+
+    // enable single interrupt
+    write_bus(PLIC_PRIO1_REG, 0x1);
+    wait(10_ns);
+
+    write_bus(PLIC_ENABLE_REG, 0x2);
+    wait(10_ns);
+
+    // generate interrupt pulse (note: 1 is lowest usable register)
+    global_interrupts_o[1].write(1);
+    wait(10_ns);
+    global_interrupts_o[1].write(0);
+    wait(10_ns);
+
+    // read claim_complete register
+    reg_check(PLIC_PENDING_REG, 0x2);
+    wait(10_ns);
+    reg_check(PLIC_CLAIM_COMPLETE_REG, 0x1);
+    wait(10_ns);
+
+	//// after writing to claim_complete reg (per fw)
+	// -> pending bit expected to be unset
+	// -> enable bit expected to be set ... test with / without enable being set
+    write_bus(PLIC_CLAIM_COMPLETE_REG, 0x1);
+    wait(10_ns);
+    reg_check(PLIC_PENDING_REG, 0x0);
+    wait(10_ns);
+    reg_check(PLIC_CLAIM_COMPLETE_REG, 0x0);
+    wait(10_ns);
+
+    // todo: remove wait statements once the tlm_initiator is in place
+    // todo: evaluate error messages ... provide correct pass/fail verdict
+
+    wait(100_ns);
+
+}
+
+void test_initiator::test_frequent_irq()
+{
+
+}
+
+void test_initiator::test_parallel_irq()
+{
+
+	//// create three parallel global_int requests
+	// -> read and clear bits one after the other
+	// -> different priorities applied (reverse order)
+	// -> correct priority handing expected
+	// -> three core interrupts expected in total
+
+
+    // reverse order priority configuration
+    write_bus(PLIC_PRIO1_REG, 0x3);
+    wait(10_ns);
+    write_bus(PLIC_PRIO2_REG, 0x2);
+    wait(10_ns);
+    write_bus(PLIC_PRIO3_REG, 0x1);
+    wait(10_ns);
+
+    // enable all three interrupts
+    write_bus(PLIC_ENABLE_REG, 0xE);
+    wait(10_ns);
+
+    // generate interrupt pulse (note: 1 is lowest usable register)
+    global_interrupts_o[1].write(1);
+    wait(10_ns);
+    global_interrupts_o[1].write(0);
+    wait(10_ns);
+    global_interrupts_o[2].write(1);
+    wait(10_ns);
+    global_interrupts_o[2].write(0);
+    wait(10_ns);
+    global_interrupts_o[3].write(1);
+    wait(10_ns);
+    global_interrupts_o[3].write(0);
+    wait(10_ns);
+
+    // expect three pending registers
+    reg_check(PLIC_PENDING_REG, 0xE);
+    wait(10_ns);
+
+    // expect lowest interrupt id to be highest int
+    reg_check(PLIC_CLAIM_COMPLETE_REG, 0x1);
+    wait(10_ns);
+
+	//// after writing to claim_complete reg (per fw)
+	// -> next int to become highest irq
+    write_bus(PLIC_CLAIM_COMPLETE_REG, 0x1);
+    wait(10_ns);
+    reg_check(PLIC_PENDING_REG, 0xC);
+    wait(10_ns);
+    reg_check(PLIC_CLAIM_COMPLETE_REG, 0x2);
+    wait(10_ns);
+
+	//// after writing to claim_complete reg again (per fw)
+	// -> next int to become highest irq
+    write_bus(PLIC_CLAIM_COMPLETE_REG, 0x2);
+    wait(10_ns);
+    reg_check(PLIC_PENDING_REG, 0x8);
+    wait(10_ns);
+    reg_check(PLIC_CLAIM_COMPLETE_REG, 0x3);
+    wait(10_ns);
+
+	//// after last writing to claim_complete reg again (per fw)
+	// -> no further pending irq expected
+    write_bus(PLIC_CLAIM_COMPLETE_REG, 0x3);
+    wait(10_ns);
+    reg_check(PLIC_PENDING_REG, 0x0);
+    wait(10_ns);
+    reg_check(PLIC_CLAIM_COMPLETE_REG, 0x0);
+    wait(10_ns);
+
+
+    // todo: advance upon register-write access ... remove above 10_ns waits
+    // todo: evaluate error messages ... provide correct pass/fail verdict
+
+    wait(100_ns);
+
+}
+
+void test_initiator::test_irq_stress()
+{
+
+}
+
+void test_initiator::write_bus(std::uint32_t adr, std::uint32_t dat)
+{
     tlm::tlm_generic_payload gp;
     std::array<uint8_t, 4> data;
-    srInfo()("group", "comm")("read access");
-    gp.set_command(tlm::TLM_READ_COMMAND);
-//    gp.set_address(0x10012000);
-    gp.set_address(0xc000004);
+    data[3] = 0xff & dat>>24;
+    data[2] = 0xff & dat>>16;
+    data[1] = 0xff & dat>>8;
+    data[0] = 0xff & dat;
+
+    LOG(logging::INFO) << "write_bus(0x" << std::hex << adr << ") : " << dat;
+
+    gp.set_command(tlm::TLM_WRITE_COMMAND);
+    gp.set_address(adr);
     gp.set_data_ptr(data.data());
     gp.set_data_length(data.size());
     gp.set_streaming_width(4);
     sc_core::sc_time delay;
     intor->b_transport(gp, delay);
-    wait(10_ns);
-    srWarn()("group", "comm")("write access");
-    gp.set_command(tlm::TLM_WRITE_COMMAND);
-    gp.set_address(0x10012000);
-    data[0]=0xA5;
+
+    if ( gp.get_response_status() != tlm::TLM_OK_RESPONSE ) {
+      throw std::exception();
+    }
+}
+
+std::uint32_t test_initiator::read_bus(std::uint32_t adr)
+{
+
+    tlm::tlm_generic_payload gp;
+    std::array<uint8_t, 4> data;
+
+    gp.set_command(tlm::TLM_READ_COMMAND);
+    gp.set_address(adr);
+    gp.set_data_ptr(data.data());
+    gp.set_data_length(data.size());
+    gp.set_streaming_width(4);
+    sc_core::sc_time delay;
     intor->b_transport(gp, delay);
-    wait(10_ns);
+
+    if ( gp.get_response_status() != tlm::TLM_OK_RESPONSE ) {
+    	// todo: improve output in case of exception, define own exception class to carry transaction-infos
+    	// ... i.e. out-of-range report with info about legal mem boundaries
+        throw std::exception();
+    }
+
+    // todo: use reinterpret_cast instead
+    std::uint32_t rdat = data[3]<<24 | data[2]<<16 | data[1]<<8 | data[0];
+
+    LOG(logging::INFO) << "read_bus(0x" << std::hex << adr << ") -> " << rdat;
+    return rdat;
+}
+
+void test_initiator::reg_check(std::uint32_t adr, std::uint32_t exp)
+{
+	uint32_t dat = read_bus(adr);
+	if ( dat != exp ) {
+		LOG(logging::ERROR) << "register check failed for address 0x" << std::hex << adr << ": " << dat << " !=  " << exp;
+	} else {
+		LOG(logging::INFO)  << "register check passed for address 0x" << std::hex << adr << ": " << dat;
+	}
+}
+
+void test_initiator::core_irq_handler()
+{
+	LOG(logging::INFO) << "core_interrupt_i edge detected -> " << core_interrupt_i.read();
 }
 
 } /* namespace sysc */
