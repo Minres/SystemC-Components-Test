@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Copyright 2017 eyck@minres.com
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License.  You may obtain a copy
 // of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
 // WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -35,14 +35,13 @@ simple_system::simple_system(sc_core::sc_module_name nm)
 , NAMED(s_clk)
 , NAMED(s_rst)
 , NAMED(s_global_interrupts, 256)
-, NAMED(s_core_interrupt)
-{
-	// todo: discuss naming conventions (s_<signal> vs. <port>_i/_o) --> covnert into _s
+, NAMED(s_core_interrupt) {
+    // todo: discuss naming conventions (s_<signal> vs. <port>_i/_o) --> covnert into _s
 
-	// bus connections
+    // bus connections
     i_master.intor(i_router.target[0]);
-    size_t i=0;
-    for(const auto& e: e300_plat_map){
+    size_t i = 0;
+    for (const auto &e : e300_plat_map) {
         i_router.initiator[i](e.target->socket);
         i_router.add_target_range(i, e.start, e.size);
         i++;
@@ -71,9 +70,9 @@ simple_system::simple_system(sc_core::sc_module_name nm)
 }
 
 void simple_system::gen_reset() {
-    s_rst=true;
+    s_rst = true;
     wait(10_ns);
-    s_rst=false;
+    s_rst = false;
 }
 
 } /* namespace sysc */

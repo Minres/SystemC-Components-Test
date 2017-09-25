@@ -42,6 +42,8 @@ if(SCV_FOUND)
     link_directories(${SCV_LIBRARY_DIRS})
 endif(SCV_FOUND)
 
+set(PROJECT_3PARTY_DIRS external sr_report sr_signal)
+include(sc-components/cmake/clang-format.cmake)
 
 add_subdirectory(sc-components)
 add_subdirectory(examples)

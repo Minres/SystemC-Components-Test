@@ -54,48 +54,40 @@ plic::plic(sc_core::sc_module_name nm)
 
 {
     regs->registerResources(*this);
-	// register callbacks
-	init_callbacks();
-	regs->claim_complete.set_write_cb(m_claim_complete_write_cb);
+    // register callbacks
+    init_callbacks();
+    regs->claim_complete.set_write_cb(m_claim_complete_write_cb);
 
-	// port callbacks
-	SC_METHOD(global_int_port_cb);
-	for(uint8_t i = 0; i<255; i++) {
-		sensitive << global_interrupts_i[i].pos();
-	}
-	dont_initialize();
+    // port callbacks
+    SC_METHOD(global_int_port_cb);
+    for (uint8_t i = 0; i < 255; i++) {
+        sensitive << global_interrupts_i[i].pos();
+    }
+    dont_initialize();
 
-	// register event callbacks
+    // register event callbacks
     SC_METHOD(clock_cb);
-    sensitive<<clk_i;
+    sensitive << clk_i;
     SC_METHOD(reset_cb);
-    sensitive<<rst_i;
-
+    sensitive << rst_i;
 }
 
-plic::~plic() {
+plic::~plic() {}
+
+void plic::init_callbacks() {
+    m_claim_complete_write_cb = [=](sysc::sc_register<uint32_t> reg, uint32_t v) -> bool {
+        reg.put(v);
+        reset_pending_int(v);
+        // std::cout << "Value of register: 0x" << std::hex << reg << std::endl;
+        // todo: reset related interrupt and find next high-prio interrupt
+        return true;
+    };
 }
 
-void plic::init_callbacks()
-{
-	m_claim_complete_write_cb = [=](sysc::sc_register<uint32_t> reg, uint32_t v)->bool {
-		reg.put(v);
-		reset_pending_int(v);
-		// std::cout << "Value of register: 0x" << std::hex << reg << std::endl;
-		// todo: reset related interrupt and find next high-prio interrupt
-		return true;
-	};
-}
+void plic::clock_cb() { this->clk = clk_i.read(); }
 
-
-void plic::clock_cb()
-{
-    this->clk=clk_i.read();
-}
-
-void plic::reset_cb()
-{
-    if(rst_i.read())
+void plic::reset_cb() {
+    if (rst_i.read())
         regs->reset_start();
     else
         regs->reset_stop();
@@ -117,77 +109,70 @@ void plic::reset_cb()
 //   - called by:
 //     - complete-reg write register content
 
+void plic::global_int_port_cb() {
 
-void plic::global_int_port_cb()
-{
+    // set related pending bit if enable is set for incoming global_interrupt
 
-	// set related pending bit if enable is set for incoming global_interrupt
+    // todo: extend up to 255 bits (limited to 32 right now)
+    for (uint32_t i = 1; i < 32; i++) {
+        uint32_t enable_bits = regs->r_enabled;
+        bool enable = enable_bits & (0x1 << i); // read enable bit
 
-	// todo: extend up to 255 bits (limited to 32 right now)
-	for(uint32_t i = 1; i<32; i++) {
-		uint32_t enable_bits = regs->r_enabled;
-		bool enable = enable_bits & (0x1 << i);  // read enable bit
+        if (enable && global_interrupts_i[i].read() == 1) {
+            regs->r_pending = regs->r_pending | (0x1 << i);
+            LOG(INFO) << "pending interrupt identified: " << i;
+        }
+    }
 
-		if ( enable && global_interrupts_i[i].read() == 1 ) {
-			regs->r_pending = regs->r_pending | ( 0x1 << i);
-			LOG(logging::INFO) << "pending interrupt identified: " << i;
-		}
-	}
-
-	handle_pending_int();
+    handle_pending_int();
 }
 
-void plic::handle_pending_int()
-{
-	// identify high-prio pending interrupt and raise a core-interrupt
-	uint32_t claim_int  = 0;                             // claim interrupt
-	uint32_t claim_prio = 0;                             // related priority (highest prio interrupt wins the race)
-	bool   raise_int    = 0;
-	uint32_t thold      = regs->r_threshold.threshold;   // threshold value
+void plic::handle_pending_int() {
+    // identify high-prio pending interrupt and raise a core-interrupt
+    uint32_t claim_int = 0;  // claim interrupt
+    uint32_t claim_prio = 0; // related priority (highest prio interrupt wins the race)
+    bool raise_int = 0;
+    uint32_t thold = regs->r_threshold.threshold; // threshold value
 
-	// todo: extend up to 255 bits (limited to 32 right now)
-	for(uint32_t i = 1; i<32; i++) {
-		uint32_t pending_bits = regs->r_pending;
-		bool pending  = (pending_bits & (0x1 << i)) ? true : false;
-		uint32_t prio = regs->r_priority[i-1].priority;     // read priority value
+    // todo: extend up to 255 bits (limited to 32 right now)
+    for (uint32_t i = 1; i < 32; i++) {
+        uint32_t pending_bits = regs->r_pending;
+        bool pending = (pending_bits & (0x1 << i)) ? true : false;
+        uint32_t prio = regs->r_priority[i - 1].priority; // read priority value
 
-		if ( pending && thold < prio )
-		{
-			regs->r_pending = regs->r_pending | ( 0x1 << i);
-			// below condition ensures implicitly that lowest id is selected in case of multiple identical priority-interrupts
-			if ( prio > claim_prio ) {
-				claim_prio = prio;
-				claim_int  = i;
-				raise_int  = 1;
-				LOG(logging::INFO) << "pending interrupt activated: " << i;
-			}
-		}
-	}
+        if (pending && thold < prio) {
+            regs->r_pending = regs->r_pending | (0x1 << i);
+            // below condition ensures implicitly that lowest id is selected in case of multiple identical
+            // priority-interrupts
+            if (prio > claim_prio) {
+                claim_prio = prio;
+                claim_int = i;
+                raise_int = 1;
+                LOG(INFO) << "pending interrupt activated: " << i;
+            }
+        }
+    }
 
-	if ( raise_int ) {
-		regs->r_claim_complete = claim_int;
-		core_interrupt_o.write(1);
-		// todo: evluate clock period
-	} else {
-		regs->r_claim_complete = 0;
-		LOG(logging::INFO) << "no further pending interrupt.";
-	}
-
-
+    if (raise_int) {
+        regs->r_claim_complete = claim_int;
+        core_interrupt_o.write(1);
+        // todo: evluate clock period
+    } else {
+        regs->r_claim_complete = 0;
+        LOG(INFO) << "no further pending interrupt.";
+    }
 }
 
-void plic::reset_pending_int(uint32_t irq)
-{
-	// todo: evaluate enable register (see spec)
-	// todo: make sure that pending is set, otherwise don't reset irq ... read spec.
-	LOG(logging::INFO) << "reset pending interrupt: " << irq;
-	// reset related pending bit
-	regs->r_pending &= ~(0x1 << irq);
-	core_interrupt_o.write(0);
+void plic::reset_pending_int(uint32_t irq) {
+    // todo: evaluate enable register (see spec)
+    // todo: make sure that pending is set, otherwise don't reset irq ... read spec.
+    LOG(INFO) << "reset pending interrupt: " << irq;
+    // reset related pending bit
+    regs->r_pending &= ~(0x1 << irq);
+    core_interrupt_o.write(0);
 
-	// evaluate next pending interrupt
-	handle_pending_int();
+    // evaluate next pending interrupt
+    handle_pending_int();
 }
-
 
 } /* namespace sysc */
