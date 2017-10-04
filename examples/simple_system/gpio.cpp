@@ -16,7 +16,7 @@
 
 #include "gpio.h"
 #include "gen/gpio_regs.h"
-#include "sysc/utilities.h"
+#include "scc/utilities.h"
 
 namespace sysc {
 

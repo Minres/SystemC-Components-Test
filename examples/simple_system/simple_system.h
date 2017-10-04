@@ -31,7 +31,7 @@
 #include "test_initiator.h"
 #include <array>
 #include <sysc/kernel/sc_module.h>
-#include <sysc/router.h>
+#include <scc/router.h>
 
 namespace sysc {
 
@@ -40,7 +40,7 @@ public:
     SC_HAS_PROCESS(simple_system);
 
     test_initiator i_master;
-    router<> i_router;
+    scc::router<> i_router;
     uart i_uart;
     spi i_spi;
     gpio i_gpio;

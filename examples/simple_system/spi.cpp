@@ -16,7 +16,7 @@
 
 #include "spi.h"
 #include "gen/spi_regs.h"
-#include "sysc/utilities.h"
+#include "scc/utilities.h"
 
 namespace sysc {
 

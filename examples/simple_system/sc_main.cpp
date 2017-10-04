@@ -23,11 +23,12 @@
 #include "simple_system.h"
 #include <boost/program_options.hpp>
 #include <sstream>
-#include <sysc/report.h>
-#include <sysc/scv_tr_db.h>
-#include <sysc/tracer.h>
+#include <scc/report.h>
+#include <scc/scv_tr_db.h>
+#include <scc/tracer.h>
 
 using namespace sysc;
+using namespace scc;
 namespace po = boost::program_options;
 
 namespace {
@@ -42,7 +43,7 @@ int sc_main(int argc, char *argv[]) {
     putenv(const_cast<char *>("SC_SIGNAL_WRITE_CHECK=DISABLE"));
 
     //    sc_report_handler::set_handler(my_report_handler);
-    sysc::Logger::reporting_level() = log::DEBUG;
+    scc::Logger<>::reporting_level() = log::DEBUG;
     // todo: add module-name to log-file
 
     ///////////////////////////////////////////////////////////////////////////
@@ -69,7 +70,7 @@ int sc_main(int argc, char *argv[]) {
     ///////////////////////////////////////////////////////////////////////////
     // set up tracing & transaction recording
     ///////////////////////////////////////////////////////////////////////////
-    sysc::tracer trace("simple_system", sysc::tracer::TEXT, vm.count("trace"));
+    tracer trace("simple_system", tracer::TEXT, vm.count("trace"));
     // todo: fix displayed clock period in VCD
 
     ///////////////////////////////////////////////////////////////////////////

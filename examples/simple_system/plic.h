@@ -17,14 +17,14 @@
 #ifndef _PLIC_H_
 #define _PLIC_H_
 
-#include <sysc/register.h>
-#include <sysc/tlm_target.h>
+#include <scc/register.h>
+#include <scc/tlm_target.h>
 
 namespace sysc {
 
 class plic_regs;
 
-class plic : public sc_core::sc_module, public tlm_target<> {
+class plic : public sc_core::sc_module, public scc::tlm_target<> {
 public:
     SC_HAS_PROCESS(plic);
     sc_core::sc_in<sc_core::sc_time> clk_i;
@@ -49,7 +49,7 @@ protected:
     void clear_core_interrupt();
     sc_core::sc_time clk;
     std::unique_ptr<plic_regs> regs;
-    std::function<bool(sc_register<uint32_t>, uint32_t)> m_claim_complete_write_cb;
+    std::function<bool(scc::sc_register<uint32_t>, uint32_t)> m_claim_complete_write_cb;
 };
 
 } /* namespace sysc */

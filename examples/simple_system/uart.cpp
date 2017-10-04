@@ -16,7 +16,7 @@
 
 #include "uart.h"
 #include "gen/uart_regs.h"
-#include "sysc/utilities.h"
+#include "scc/utilities.h"
 
 namespace sysc {
 

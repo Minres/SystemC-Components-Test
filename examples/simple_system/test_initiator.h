@@ -23,7 +23,7 @@
 #ifndef _TEST_INITIATOR_H_
 #define _TEST_INITIATOR_H_
 
-#include <sysc/utilities.h>
+#include <scc/utilities.h>
 #include <tlm_utils/simple_initiator_socket.h>
 
 namespace sysc {

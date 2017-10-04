@@ -22,8 +22,8 @@
 
 #include "test_initiator.h"
 #include <array>
-#include <sysc/report.h>
-#include <sysc/utilities.h>
+#include <scc/report.h>
+#include <scc/utilities.h>
 
 // todo: move into gen folder somewhere (adapt code-generator)
 #define PLIC_PRIO1_REG 0x0C000004
