@@ -1,3 +1,11 @@
 eclipse.preferences.version=1
+environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.133691581/SC_DEFAULT_WRITER_POLICY/delimiter=\:
+environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.133691581/SC_DEFAULT_WRITER_POLICY/operation=append
+environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.133691581/SC_DEFAULT_WRITER_POLICY/value=SC_MANY_WRITERS
 environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.133691581/append=true
 environment/project/cdt.managedbuild.config.gnu.macosx.exe.debug.133691581/appendContributed=true
+environment/project/cdt.managedbuild.config.macosx.exe.release.222902119/SC_DEFAULT_WRITER_POLICY/delimiter=\:
+environment/project/cdt.managedbuild.config.macosx.exe.release.222902119/SC_DEFAULT_WRITER_POLICY/operation=append
+environment/project/cdt.managedbuild.config.macosx.exe.release.222902119/SC_DEFAULT_WRITER_POLICY/value=SC_MANY_WRITERS
+environment/project/cdt.managedbuild.config.macosx.exe.release.222902119/append=true
+environment/project/cdt.managedbuild.config.macosx.exe.release.222902119/appendContributed=true

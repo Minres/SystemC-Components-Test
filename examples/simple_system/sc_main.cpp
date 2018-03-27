@@ -38,20 +38,20 @@ const size_t ERROR_UNHANDLED_EXCEPTION = 2;
 } // namespace
 
 int sc_main(int argc, char *argv[]) {
-
-    // Environment adaptations
-    putenv(const_cast<char *>("SC_SIGNAL_WRITE_CHECK=DISABLE"));
-
-    //    sc_report_handler::set_handler(my_report_handler);
-    scc::Logger<>::reporting_level() = log::DEBUG;
-    // todo: add module-name to log-file
-
+    ///////////////////////////////////////////////////////////////////////////
+    // setup initial logging
+    ///////////////////////////////////////////////////////////////////////////
+    scc::Logger<>::reporting_level() = logging::INFO;
     ///////////////////////////////////////////////////////////////////////////
     // CLI argument parsing
     ///////////////////////////////////////////////////////////////////////////
     po::options_description desc("Options");
-    desc.add_options()("help,h", "Print help message")("debug,d", po::value<int>(),
-                                                       "set debug level")("trace,t", "trace SystemC signals");
+    // clang-format off
+    desc.add_options()
+    		("help,h",  "Print help message")
+			("debug,d", "set debug level")
+			("trace,t", "trace SystemC signals");
+    // clang-format on
     po::variables_map vm;
     try {
         po::store(po::parse_command_line(argc, argv, desc), vm); // can throw
@@ -67,6 +67,12 @@ int sc_main(int argc, char *argv[]) {
         std::cerr << desc << std::endl;
         return ERROR_IN_COMMAND_LINE;
     }
+    if (vm.count("debug")) {
+    	LOGGER(DEFAULT)::reporting_level() = log::DEBUG;
+        LOGGER(SystemC)::reporting_level() = log::DEBUG;
+        scc::Logger<>::reporting_level() = log::DEBUG;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // set up tracing & transaction recording
     ///////////////////////////////////////////////////////////////////////////
@@ -89,5 +95,5 @@ int sc_main(int argc, char *argv[]) {
         LOG(ERROR) << "simulation timed out";
         sc_core::sc_stop();
     }
-    return 0;
+    return SUCCESS;
 }
