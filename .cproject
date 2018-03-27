@@ -184,9 +184,6 @@
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.macosx.exe.debug.133691581;cdt.managedbuild.config.gnu.macosx.exe.debug.133691581.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1937096603;cdt.managedbuild.tool.gnu.cpp.compiler.input.803568785">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.macosx.exe.debug.133691581;cdt.managedbuild.config.gnu.macosx.exe.debug.133691581.;cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.1149501692;cdt.managedbuild.tool.gnu.cpp.compiler.input.506955043">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
@@ -194,9 +191,6 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.macosx.exe.release.222902119;cdt.managedbuild.config.macosx.exe.release.222902119.;cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.release.1207281858;cdt.managedbuild.tool.gnu.cpp.compiler.input.749408456">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.macosx.exe.debug.133691581;cdt.managedbuild.config.gnu.macosx.exe.debug.133691581.;cdt.managedbuild.tool.gnu.c.compiler.base.318007495;cdt.managedbuild.tool.gnu.c.compiler.input.1732590288">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.macosx.exe.release.222902119;cdt.managedbuild.config.macosx.exe.release.222902119.;cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.release.2136924185;cdt.managedbuild.tool.gnu.c.compiler.input.220005104">
