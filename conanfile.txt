@@ -1,0 +1,16 @@
+[requires]
+	gsl_microsoft/20180102@bincrafters/stable
+	spdlog/0.16.3@bincrafters/stable
+    SystemC/2.3.2@minres/stable
+    SystemCVerification/2.0.1@minres/stable
+    SystemC-CCI/0.9.0@minres/stable
+
+[generators]
+    cmake
+    txt
+
+[options]
+    SystemC:stdcxx=14
+    SystemC:shared=True
+    SystemCVerification:stdcxx=14
+    SystemC-CCI:stdcxx=14

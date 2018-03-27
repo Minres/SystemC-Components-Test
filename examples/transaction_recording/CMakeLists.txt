@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.3)
 # Add executable called "transaction_recording" that is built from the source files
 # "scv_tr_recording_example.cpp". The extensions are automatically found.
 add_executable (transaction_recording scv_tr_recording_example.cpp)
