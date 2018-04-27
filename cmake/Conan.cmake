@@ -41,5 +41,5 @@ macro(setup_conan)
   endif()
 
   include(${conanfile_cmake})
-  conan_basic_setup(TARGETS)
+  conan_basic_setup()
 endmacro()

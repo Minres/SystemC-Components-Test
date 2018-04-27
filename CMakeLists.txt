@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.3)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/sc-components/cmake)
+set(CMAKE_MODULE_PATH 
+	${CMAKE_MODULE_PATH} 
+	${CMAKE_CURRENT_SOURCE_DIR}/cmake 
+	${CMAKE_CURRENT_SOURCE_DIR}/sc-components/cmake
+)
 
 include(GitFunctions)
 get_branch_from_git()
