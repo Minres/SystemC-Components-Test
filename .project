@@ -24,4 +24,22 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>sysc_src</name>
+			<type>2</type>
+			<location>/home/eyck/.conan/data/SystemC/2.3.2/minres/stable/source/systemc-2.3.2/src</location>
+		</link>
+	</linkedResources>
+	<filteredResources>
+		<filter>
+			<id>1530629211275</id>
+			<name>sysc_src</name>
+			<type>22</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-*.h</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

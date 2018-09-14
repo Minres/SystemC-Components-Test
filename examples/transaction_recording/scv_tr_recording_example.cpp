@@ -324,7 +324,7 @@ inline void design::data_phase() {
         outstandingType.pop_front();
     }
 }
-extern void scv_tr_sqlite_init();
+extern void scv_tr_binary_init();
 
 int sc_main(int argc, char *argv[]) {
     scv_startup();
@@ -333,7 +333,7 @@ int sc_main(int argc, char *argv[]) {
     scv_tr_text_init();
     const char* fileName = "my_db.txlog";
 #else
-    scv_tr_sqlite_init();
+    scv_tr_binary_init();
     const char *fileName = "my_db";
 #endif
     scv_tr_db db(fileName);

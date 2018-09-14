@@ -10,5 +10,6 @@ add_executable (transaction_recording
 target_link_libraries (transaction_recording LINK_PUBLIC sc-components)
 target_link_libraries (transaction_recording LINK_PUBLIC ${SystemC_LIBRARIES})
 target_link_libraries (transaction_recording LINK_PUBLIC ${SCV_LIBRARIES})
+target_link_libraries (transaction_recording LINK_PUBLIC ${Boost_LIBRARIES} )
 target_link_libraries (transaction_recording LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries (transaction_recording LINK_PUBLIC ${CMAKE_DL_LIBS})

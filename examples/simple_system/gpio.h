@@ -18,6 +18,7 @@
 #define _GPIO_H_
 
 #include <scc/tlm_target.h>
+#include <tlm/tlm_signal.h>
 
 namespace sysc {
 
@@ -28,6 +29,8 @@ public:
     SC_HAS_PROCESS(gpio);
     sc_core::sc_in<sc_core::sc_time> clk_i;
     sc_core::sc_in<bool> rst_i;
+    sc_core::sc_vector<tlm::tlm_signal_initiator_socket<>> out;
+    sc_core::sc_vector<tlm::tlm_signal_target_socket<>> in;
     gpio(sc_core::sc_module_name nm);
     virtual ~gpio();
 

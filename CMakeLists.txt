@@ -40,7 +40,7 @@ setup_conan()
 
 # This line finds the boost lib and headers. 
 set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before searching for a regular boost install.
-find_package(Boost COMPONENTS program_options system thread REQUIRED)
+find_package(Boost COMPONENTS program_options filesystem system thread REQUIRED)
 
 # set-up SystemC and SCV
 find_package(SystemC)

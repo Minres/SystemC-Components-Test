@@ -66,6 +66,7 @@ simple_system::simple_system(sc_core::sc_module_name nm)
     i_master.global_interrupts_o(s_global_interrupts);
     i_master.core_interrupt_i(s_core_interrupt);
 
+    i_gpio.in(i_gpio.out);
     SC_THREAD(gen_reset);
 }
 
