@@ -26,6 +26,7 @@
 #include <scc/report.h>
 #include <scc/scv_tr_db.h>
 #include <scc/tracer.h>
+#include <util/logging.h>
 
 using namespace sysc;
 using namespace scc;
@@ -40,8 +41,9 @@ const size_t ERROR_UNHANDLED_EXCEPTION = 2;
 int sc_main(int argc, char *argv[]) {
     ///////////////////////////////////////////////////////////////////////////
     // setup initial logging
-    ///////////////////////////////////////////////////////////////////////////
-    scc::Logger<>::reporting_level() = logging::INFO;
+    ///////////////////////////////////////////////////////////////////////////       LOGGER(DEFAULT)::reporting_level() = l;
+    LOGGER(DEFAULT)::reporting_level() = logging::INFO;
+    LOGGER(SystemC)::reporting_level() = logging::INFO;
     ///////////////////////////////////////////////////////////////////////////
     // CLI argument parsing
     ///////////////////////////////////////////////////////////////////////////
@@ -67,11 +69,10 @@ int sc_main(int argc, char *argv[]) {
         std::cerr << desc << std::endl;
         return ERROR_IN_COMMAND_LINE;
     }
-    if (vm.count("debug")) {
-    	LOGGER(DEFAULT)::reporting_level() = log::DEBUG;
-        LOGGER(SystemC)::reporting_level() = log::DEBUG;
-        scc::Logger<>::reporting_level() = log::DEBUG;
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // configure logging
+    ///////////////////////////////////////////////////////////////////////////
+    scc::init_logging(vm.count("debug")?logging::DEBUG:logging::INFO);
 
     ///////////////////////////////////////////////////////////////////////////
     // set up tracing & transaction recording
@@ -83,7 +84,6 @@ int sc_main(int argc, char *argv[]) {
     // instantiate top level
     ///////////////////////////////////////////////////////////////////////////
     simple_system i_simple_system("i_simple_system");
-    // sr_report_handler::add_sc_object_to_filter(&i_simple_system.i_master, sc_core::SC_WARNING, sc_core::SC_MEDIUM);
 
     ///////////////////////////////////////////////////////////////////////////
     // run simulation
@@ -92,7 +92,7 @@ int sc_main(int argc, char *argv[]) {
     // todo: provide end-of-simulation macros
 
     if (!sc_core::sc_end_of_simulation_invoked()) {
-        LOG(ERROR) << "simulation timed out";
+        SCERR() << "simulation timed out";
         sc_core::sc_stop();
     }
     return SUCCESS;

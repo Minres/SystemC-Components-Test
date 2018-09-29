@@ -44,7 +44,7 @@
 namespace sysc {
 
 class gpio_regs : public sc_core::sc_module, public scc::resetable {
-protected:
+public:
     // storage declarations
     uint32_t r_value;
 

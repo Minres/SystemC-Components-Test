@@ -35,7 +35,9 @@ simple_system::simple_system(sc_core::sc_module_name nm)
 , NAMED(s_clk)
 , NAMED(s_rst)
 , NAMED(s_global_interrupts, 256)
-, NAMED(s_core_interrupt) {
+, NAMED(s_core_interrupt)
+, NAMED(s_gpio, 32)
+{
     // todo: discuss naming conventions (s_<signal> vs. <port>_i/_o) --> covnert into _s
 
     // bus connections
@@ -66,7 +68,11 @@ simple_system::simple_system(sc_core::sc_module_name nm)
     i_master.global_interrupts_o(s_global_interrupts);
     i_master.core_interrupt_i(s_core_interrupt);
 
-    i_gpio.in(i_gpio.out);
+    for(auto i=0U; i<s_gpio.size(); ++i){
+      s_gpio[i].in(i_gpio.pins_o[i]);
+      i_gpio.pins_i[i](s_gpio[i].out);
+    }
+
     SC_THREAD(gen_reset);
 }
 
