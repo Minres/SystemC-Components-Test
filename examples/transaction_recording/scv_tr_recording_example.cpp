@@ -19,11 +19,11 @@
 #include "scc/scv_tr_db.h"
 #include "scc/report.h"
 
-//47ms #define SQLITE_DB
-//27ms
-#define CTXT_DB
-//29ms #define BINARY_DB
-//27ms TEXT_DB
+// text         11308µs/11602µs
+// compressed   10365µs/ 9860µs
+// binary       13233µs/10698µs
+// SQLite       30363µs/30018µs
+// LeveDB       23898µs/22367µs
 
 // hack to fake a true fifo_mutex
 #define fifo_mutex sc_mutex
@@ -330,25 +330,38 @@ inline void design::data_phase() {
     }
 }
 
+inline const char* init_db(char type){
+    switch(type){
+    case '2':
+        scv_tr_compressed_init();
+        return "my_db.txlog";
+        break;
+    case '3':
+        scv_tr_binary_init();
+        return "my_db.txb";
+        break;
+   case '4':
+        scv_tr_sqlite_init();
+        return "my_db.txdb";
+        break;
+    case '5':
+        scv_tr_ldb_init();
+        return "my_db.txldb";
+        break;
+    default:
+        scv_tr_text_init();
+        return "my_db.txlog";
+        break;
+    }
+}
+
 int sc_main(int argc, char *argv[]) {
     auto start = std::chrono::system_clock::now();
     scv_startup();
     scc::init_logging(logging::INFO);
     LOGGER(SystemC)::print_time() = false;
-
-#if defined(BINARY_DB)
-    scv_tr_binary_init();
-    const char *fileName = "my_db";
-#elif defined(CTXT_DB)
-    scv_tr_compressed_init();
-    const char* fileName = "my_db.txlog";
-#elif defined(SQLITE_DB)
-    scv_tr_sqlite_init();
-    const char* fileName = "my_db.txdb";
-#else
-    scv_tr_text_init();
-    const char* fileName = "my_db.txlog";
-#endif
+    const char *fileName = argc==2? init_db(argv[1][0]): "my_db.txlog";
+    if(argc<2) scv_tr_text_init();
     scv_tr_db db(fileName);
     scv_tr_db::set_default_db(&db);
     sc_trace_file *tf = sc_create_vcd_trace_file("my_db");

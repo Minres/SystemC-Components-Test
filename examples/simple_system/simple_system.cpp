@@ -44,7 +44,7 @@ simple_system::simple_system(sc_core::sc_module_name nm)
     i_master.intor(i_router.target[0]);
     size_t i = 0;
     for (const auto &e : e300_plat_map) {
-        i_router.initiator[i](e.target->socket);
+        i_router.initiator[i](e.target);
         i_router.add_target_range(i, e.start, e.size);
         i++;
     }

@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.3)
-set(CMAKE_MODULE_PATH 
-	${CMAKE_MODULE_PATH} 
-	${CMAKE_CURRENT_SOURCE_DIR}/cmake 
-	${CMAKE_CURRENT_SOURCE_DIR}/sc-components/cmake
-)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/sc-components/cmake)
+
+set(ENABLE_SCV TRUE CACHE BOOL "Enable use of SCV")
 
 include(GitFunctions)
 get_branch_from_git()
@@ -22,16 +20,24 @@ include(Conan)
 
 #enable_testing() 
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
+if(COMPILER_SUPPORTS_MARCH_NATIVE)
+if("${CMAKE_BUILD_TYPE}" STREQUAL "") 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+elseif(NOT(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo"))
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+endif()
+endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(warnings "-Wall -Wextra -Werror")
     set(CMAKE_CXX_FLAG_RELEASE "-O2 -DNDEBUG")
     set(CMAKE_C_FLAG_RELEASE "-O2 -DNDEBUG")
-    set(CMAKE_CXX_FLAG_DEBUG "-Og")
-    set(CMAKE_C_FLAG_DEBUG "-Og")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(warnings "/W4 /WX /EHsc")
 endif()
@@ -83,3 +89,5 @@ add_subdirectory(examples)
 
 #include(PackageConfigurator)
 
+#include(FeatureSummary)
+#feature_summary(WHAT ENABLED_FEATURES DISABLED_FEATURES PACKAGES_FOUND)

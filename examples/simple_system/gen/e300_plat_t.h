@@ -18,10 +18,10 @@
 // need double braces, see
 // https://stackoverflow.com/questions/6893700/how-to-construct-stdarray-object-with-initializer-list#6894191
 const std::array<scc::target_memory_map_entry<32>, 4> e300_plat_map = {{
-    {&i_plic, 0x0c000000, 0x200008},
-    {&i_gpio, 0x10012000, 0x1000},
-    {&i_uart, 0x10013000, 0x1000},
-    {&i_spi, 0x10014000, 0x1000},
+    {i_plic.socket, 0x0c000000, 0x200008},
+    {i_gpio.socket, 0x10012000, 0x1000},
+    {i_uart.socket, 0x10013000, 0x1000},
+    {i_spi.socket, 0x10014000, 0x1000},
 }};
 
 #endif /* _E300_PLAT_MAP_H_ */

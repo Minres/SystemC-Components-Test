@@ -36,8 +36,10 @@
 #define PLIC_CLAIM_COMPLETE_REG 0x0C200004
 
 namespace sysc {
-test_initiator::test_initiator(sc_core::sc_module_name nm)
-: sc_core::sc_module(nm)
+using namespace sc_core;
+
+test_initiator::test_initiator(sc_module_name nm)
+: sc_module(nm)
 , NAMED(intor)
 , NAMED(rst_i)
 , NAMED(global_interrupts_o, 256)
@@ -62,6 +64,8 @@ void test_initiator::run() {
     test_irq_stress();
 
     // todo: review irq sequences from FW point of view ... expected ???
+    wait(100_ns);
+    sc_stop();
 }
 
 void test_initiator::test_unique_irq() {
@@ -211,14 +215,14 @@ void test_initiator::write_bus(std::uint32_t adr, std::uint32_t dat) {
     data[1] = 0xff & dat >> 8;
     data[0] = 0xff & dat;
 
-    LOG(INFO) << "write_bus(0x" << std::hex << adr << ") : " << dat;
+    SCDEBUG("test_initiator") << "write_bus(0x" << std::hex << adr << ") : " << dat;
 
     gp.set_command(tlm::TLM_WRITE_COMMAND);
     gp.set_address(adr);
     gp.set_data_ptr(data.data());
     gp.set_data_length(data.size());
     gp.set_streaming_width(4);
-    sc_core::sc_time delay;
+    sc_time delay;
     intor->b_transport(gp, delay);
 
     if (gp.get_response_status() != tlm::TLM_OK_RESPONSE) {
@@ -236,7 +240,7 @@ std::uint32_t test_initiator::read_bus(std::uint32_t adr) {
     gp.set_data_ptr(data.data());
     gp.set_data_length(data.size());
     gp.set_streaming_width(4);
-    sc_core::sc_time delay;
+    sc_time delay;
     intor->b_transport(gp, delay);
 
     if (gp.get_response_status() != tlm::TLM_OK_RESPONSE) {
@@ -248,21 +252,21 @@ std::uint32_t test_initiator::read_bus(std::uint32_t adr) {
     // todo: use reinterpret_cast instead
     std::uint32_t rdat = data[3] << 24 | data[2] << 16 | data[1] << 8 | data[0];
 
-    LOG(INFO) << "read_bus(0x" << std::hex << adr << ") -> " << rdat;
+    SCDEBUG("test_initiator") << "read_bus(0x" << std::hex << adr << ") -> " << rdat;
     return rdat;
 }
 
 void test_initiator::reg_check(std::uint32_t adr, std::uint32_t exp) {
     uint32_t dat = read_bus(adr);
     if (dat != exp) {
-        LOG(ERROR) << "register check failed for address 0x" << std::hex << adr << ": " << dat << " !=  " << exp;
+        SCERR("test_initiator") << "register check failed for address 0x" << std::hex << adr << ": " << dat << " !=  " << exp;
     } else {
-        LOG(INFO) << "register check passed for address 0x" << std::hex << adr << ": " << dat;
+        SCDEBUG("test_initiator") << "register check passed for address 0x" << std::hex << adr << ": " << dat;
     }
 }
 
 void test_initiator::core_irq_handler() {
-    LOG(INFO) << "core_interrupt_i edge detected -> " << core_interrupt_i.read();
+    SCDEBUG("test_initiator") << "core_interrupt_i edge detected -> " << core_interrupt_i.read();
 }
 
 } /* namespace sysc */
