@@ -337,16 +337,8 @@ inline const char* init_db(char type){
         return "my_db.txlog";
         break;
     case '3':
-        scv_tr_binary_init();
-        return "my_db.txb";
-        break;
-   case '4':
         scv_tr_sqlite_init();
         return "my_db.txdb";
-        break;
-    case '5':
-        scv_tr_ldb_init();
-        return "my_db.txldb";
         break;
     default:
         scv_tr_text_init();
