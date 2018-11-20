@@ -42,12 +42,14 @@ simple_system::simple_system(sc_core::sc_module_name nm)
 
     // bus connections
     i_master.intor(i_router.target[0]);
-    size_t i = 0;
-    for (const auto &e : e300_plat_map) {
-        i_router.initiator[i](e.target);
-        i_router.add_target_range(i, e.start, e.size);
-        i++;
-    }
+    i_router.bind_target(i_plic.socket, 0, "plic");
+    i_router.bind_target(i_uart.socket, 1, "uart");
+    i_router.bind_target(i_spi.socket,  2, "spi");
+    i_router.bind_target(i_gpio.socket, 3, "gpio");
+
+    // target address ranges
+    for (const auto &e : e300_plat_map)
+        i_router.add_target_range(e.name, e.start, e.size);
 
     // clock/reset connections
     i_uart.clk_i(s_clk);
