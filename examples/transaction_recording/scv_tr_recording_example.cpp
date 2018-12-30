@@ -18,6 +18,7 @@
 #include "scv.h"
 #include "scc/scv_tr_db.h"
 #include "scc/report.h"
+#include "scc/value_registry.h"
 
 // text         11308µs/11602µs
 // compressed   10365µs/ 9860µs
@@ -366,6 +367,7 @@ int sc_main(int argc, char *argv[]) {
     sc_signal<bool> data_rdy;
     sc_signal<sc_uint<8>> bus_data;
 
+    scc::value_registry registry;
     // create modules/channels
     test t("t");
     rw_pipelined_transactor tr("tr");

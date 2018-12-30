@@ -1,5 +1,6 @@
 [requires]
 	gsl_microsoft/20180102@bincrafters/stable
+    fmt/5.2.1@bincrafters/stable 
 	spdlog/0.16.3@bincrafters/stable
     SystemC/2.3.2@minres/stable
     SystemCVerification/2.0.1@minres/stable
@@ -10,6 +11,7 @@
     txt
 
 [options]
+    fmt:header_only=True
     SystemC:stdcxx=11
     SystemC:shared=True
     SystemCVerification:stdcxx=11
