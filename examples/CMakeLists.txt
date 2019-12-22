@@ -38,4 +38,4 @@ endif(SCV_FOUND)
 
 add_subdirectory(simple_system)
 add_subdirectory(transaction_recording)
-add_subdirectory(ahb_bfm_test)
+add_subdirectory(ahb_bfm)
