@@ -21,11 +21,12 @@
  */
 
 #include "simple_system.h"
-#include <boost/program_options.hpp>
-#include <sstream>
 #include <scc/report.h>
 #include <scc/scv_tr_db.h>
 #include <scc/tracer.h>
+#include <cci_utils/broker.h>
+#include <boost/program_options.hpp>
+#include <sstream>
 
 using namespace sysc;
 using namespace scc;
@@ -38,10 +39,12 @@ const size_t ERROR_UNHANDLED_EXCEPTION = 2;
 } // namespace
 
 int sc_main(int argc, char *argv[]) {
+    sc_core::sc_report_handler::set_actions( "/IEEE_Std_1666/deprecated", sc_core::SC_DO_NOTHING );
+    sc_core::sc_report_handler::set_actions(sc_core::SC_ID_MORE_THAN_ONE_SIGNAL_DRIVER_, sc_core::SC_DO_NOTHING);
     ///////////////////////////////////////////////////////////////////////////
-    // setup initial logging
+    // create global CCI broker
     ///////////////////////////////////////////////////////////////////////////
-    scc::Logger<>::reporting_level() = logging::INFO;
+    cci::cci_register_broker(new cci_utils::broker("Global Broker"));
     ///////////////////////////////////////////////////////////////////////////
     // CLI argument parsing
     ///////////////////////////////////////////////////////////////////////////
@@ -67,12 +70,10 @@ int sc_main(int argc, char *argv[]) {
         std::cerr << desc << std::endl;
         return ERROR_IN_COMMAND_LINE;
     }
-    if (vm.count("debug")) {
-    	LOGGER(DEFAULT)::reporting_level() = log::DEBUG;
-        LOGGER(SystemC)::reporting_level() = log::DEBUG;
-        scc::Logger<>::reporting_level() = log::DEBUG;
-    }
-
+    ///////////////////////////////////////////////////////////////////////////
+    // configure logging
+    ///////////////////////////////////////////////////////////////////////////
+    scc::init_logging(vm.count("debug")?logging::DEBUG:logging::INFO);
     ///////////////////////////////////////////////////////////////////////////
     // set up tracing & transaction recording
     ///////////////////////////////////////////////////////////////////////////

@@ -25,7 +25,7 @@ gpio::gpio(sc_core::sc_module_name nm)
 , tlm_target<>(clk)
 , NAMED(clk_i)
 , NAMED(rst_i)
-, NAMEDD(gpio_regs, regs) {
+, NAMEDD(regs, gpio_regs) {
     regs->registerResources(*this);
     SC_METHOD(clock_cb);
     sensitive << clk_i;

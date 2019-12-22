@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.3)
 # Add executable called "transaction_recording" that is built from the source files
 # "scv_tr_recording_example.cpp". The extensions are automatically found.
-add_executable (transaction_recording
-	scv_tr_recording_example.cpp
+add_executable (ahb_bfm_test
+	sc_main.cpp
 )
 # Link the executable to the sc_components library. Since the sc_components library has
 # public include directories we will use those link directories when building
 # transaction_recording
-target_link_libraries (transaction_recording LINK_PUBLIC scc ${CONAN_LIBS})
+target_link_libraries (ahb_bfm_test LINK_PUBLIC scc ${CONAN_LIBS})

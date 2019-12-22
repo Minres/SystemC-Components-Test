@@ -17,15 +17,15 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.133691581." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.294919492" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.GNU_ELF" id="cdt.managedbuild.target.gnu.platform.base.431503568" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-							<builder buildPath="${workspace_loc:/sc-components-test/}" id="de.marw.cdt.cmake.core.genscriptbuilder.649731186" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CMake Builder (portable)" parallelBuildOn="false" superClass="de.marw.cdt.cmake.core.genscriptbuilder"/>
+							<builder buildPath="${workspace_loc:/sc-components-test/}" id="de.marw.cdt.cmake.core.genscriptbuilder.649731186" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CMake Builder" parallelBuildOn="false" superClass="de.marw.cdt.cmake.core.genscriptbuilder"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1722876084" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1937096603" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-								<option id="gnu.cpp.compiler.option.include.paths.1398860210" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.include.paths.1398860210" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${HOME}/.conan/data/SystemC/2.3.2/minres/stable/package/5da42a16f2fe7e4182d2c23eaed73d10d0bca3f4/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${HOME}/.conan/data/SystemCVerification/2.0.1/minres/stable/package/d9580b78ca474433b46b653ea2c6c83385840479/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${HOME}/.conan/data/SystemC-CCI/0.9.0/minres/stable/package/d9580b78ca474433b46b653ea2c6c83385840479/include&quot;"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.preprocessor.def.62636415" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.62636415" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="WITH_SCV"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.1942034420" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
@@ -39,11 +39,11 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.base.706441092" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.264303412" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
-								<option id="gnu.cpp.link.option.libs.1865739110" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.libs.1865739110" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="systemc"/>
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="scv"/>
 								</option>
-								<option id="gnu.cpp.link.option.paths.208272497" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.paths.208272497" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${SYSTEMC_HOME}/lib-linux64&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.291247993" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
@@ -184,6 +184,9 @@
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.macosx.exe.debug.133691581;cdt.managedbuild.config.gnu.macosx.exe.debug.133691581.;cdt.managedbuild.tool.gnu.cpp.compiler.base.1937096603;cdt.managedbuild.tool.gnu.cpp.compiler.input.803568785">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.macosx.exe.debug.133691581;cdt.managedbuild.config.gnu.macosx.exe.debug.133691581.;cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.1149501692;cdt.managedbuild.tool.gnu.cpp.compiler.input.506955043">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
@@ -191,6 +194,9 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.macosx.exe.release.222902119;cdt.managedbuild.config.macosx.exe.release.222902119.;cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.release.1207281858;cdt.managedbuild.tool.gnu.cpp.compiler.input.749408456">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.macosx.exe.debug.133691581;cdt.managedbuild.config.gnu.macosx.exe.debug.133691581.;cdt.managedbuild.tool.gnu.c.compiler.base.318007495;cdt.managedbuild.tool.gnu.c.compiler.input.1732590288">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.macosx.exe.release.222902119;cdt.managedbuild.config.macosx.exe.release.222902119.;cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.release.2136924185;cdt.managedbuild.tool.gnu.c.compiler.input.220005104">

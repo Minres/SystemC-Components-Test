@@ -50,8 +50,7 @@ plic::plic(sc_core::sc_module_name nm)
 , NAMED(rst_i)
 , NAMED(global_interrupts_i, 256)
 , NAMED(core_interrupt_o)
-, NAMEDD(plic_regs, regs)
-
+, NAMEDD(regs, plic_regs)
 {
     regs->registerResources(*this);
     // register callbacks
