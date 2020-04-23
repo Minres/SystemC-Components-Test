@@ -7,11 +7,9 @@ add_executable (transaction_recording
 # Link the executable to the sc_components library. Since the sc_components library has
 # public include directories we will use those link directories when building
 # transaction_recording
-target_link_libraries (transaction_recording LINK_PUBLIC sc-components)
-target_link_libraries (transaction_recording LINK_PUBLIC ${SystemC_LIBRARIES})
-target_link_libraries (transaction_recording LINK_PUBLIC ${SCV_LIBRARIES})
-target_link_libraries (transaction_recording LINK_PUBLIC ${Boost_LIBRARIES} )
-target_link_libraries (transaction_recording LINK_PUBLIC ${CONAN_LIBS_LEVELDB})
-target_link_libraries (transaction_recording LINK_PUBLIC ${ZLIB_LIBRARIES} )
-target_link_libraries (transaction_recording LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries (transaction_recording LINK_PUBLIC ${CMAKE_DL_LIBS})
+target_link_libraries (transaction_recording LINK_PUBLIC scc)
+#target_link_libraries (transaction_recording LINK_PUBLIC ${Boost_LIBRARIES} )
+#target_link_libraries (transaction_recording LINK_PUBLIC ${CONAN_LIBS_LEVELDB})
+#target_link_libraries (transaction_recording LINK_PUBLIC ${ZLIB_LIBRARIES} )
+#target_link_libraries (transaction_recording LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
+#target_link_libraries (transaction_recording LINK_PUBLIC ${CMAKE_DL_LIBS})

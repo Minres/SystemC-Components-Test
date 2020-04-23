@@ -13,11 +13,11 @@ add_executable (simple_system
 # Link the executable to the sc_components library. Since the sc_components library has
 # public include directories we will use those link directories when building
 # simple_system
-target_link_libraries (simple_system LINK_PUBLIC sc-components)
-target_link_libraries (simple_system LINK_PUBLIC ${SystemC_LIBRARIES})
-target_link_libraries (simple_system LINK_PUBLIC ${SCV_LIBRARIES})
+target_link_libraries (simple_system LINK_PUBLIC scc)
+#target_link_libraries (simple_system LINK_PUBLIC ${SystemC_LIBRARIES})
+#target_link_libraries (simple_system LINK_PUBLIC ${SCV_LIBRARIES})
 target_link_libraries (simple_system LINK_PUBLIC ${Boost_LIBRARIES} )
-target_link_libraries (simple_system LINK_PUBLIC ${CONAN_LIBS_LEVELDB})
-target_link_libraries (simple_system LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
-target_link_libraries (simple_system LINK_PUBLIC ${ZLIB_LIBRARY})
-target_link_libraries (simple_system LINK_PUBLIC ${CMAKE_DL_LIBS})
+#target_link_libraries (simple_system LINK_PUBLIC ${CONAN_LIBS_LEVELDB})
+#target_link_libraries (simple_system LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT})
+#target_link_libraries (simple_system LINK_PUBLIC ${ZLIB_LIBRARY})
+#target_link_libraries (simple_system LINK_PUBLIC ${CMAKE_DL_LIBS})

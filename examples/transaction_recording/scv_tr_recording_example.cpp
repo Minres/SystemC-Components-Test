@@ -351,8 +351,7 @@ inline const char* init_db(char type){
 int sc_main(int argc, char *argv[]) {
     auto start = std::chrono::system_clock::now();
     scv_startup();
-    scc::init_logging(logging::INFO);
-    LOGGER(SystemC)::print_time() = false;
+    scc::init_logging(scc::LogConfig().logLevel(logging::DEBUG));
     const char *fileName = argc==2? init_db(argv[1][0]): "my_db.txlog";
     if(argc<2) scv_tr_text_init();
     scv_tr_db db(fileName);

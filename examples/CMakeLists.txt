@@ -15,7 +15,7 @@ include(Common)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 find_package(Threads)
-find_package(SystemC REQUIRED)
+find_package(OSCISystemC REQUIRED)
 find_package(ZLIB)
 if(SystemC_FOUND)
     include_directories(${SystemC_INCLUDE_DIRS})

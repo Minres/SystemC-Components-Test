@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.12)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_CURRENT_SOURCE_DIR}/sc-components/cmake)
+
+project(SCC_Test)
 
 set(ENABLE_SCV TRUE CACHE BOOL "Enable use of SCV")
 set(ENABLE_SHARED TRUE CACHE BOOL "Build shared libraries")
-
+set(NO_SUBMODULE_CHECK FALSE CACHE BOOL "Disable the submodule check")
 include(GitFunctions)
 get_branch_from_git()
 
@@ -16,7 +18,9 @@ set(GIT_SUBMODULE_DIR_sc-components .)
 set(GIT_SUBMODULE_BRANCH_sc-components ${GIT_BRANCH})
 
 include(GNUInstallDirs)
-include(Submodules)
+if(NOT NO_SUBMODULE_CHECK)
+	include(Submodules)
+endif()
 include(Conan)
 include(BuildType)
 
@@ -52,7 +56,7 @@ set(Boost_NO_BOOST_CMAKE ON) #  Don't do a find_package in config mode before se
 find_package(Boost COMPONENTS program_options filesystem system thread REQUIRED)
 
 # set-up SystemC and SCV
-find_package(SystemC)
+find_package(OSCISystemC)
 if(SystemC_FOUND)
     add_definitions(-DWITH_SYSTEMC)
     include_directories(${SystemC_INCLUDE_DIRS})
@@ -78,7 +82,7 @@ include(sc-components/cmake/clang-format.cmake)
 
 add_subdirectory(sc-components)
 add_subdirectory(examples)
-#add_subdirectory(test)
+add_subdirectory(tests)
 
 #
 # SYSTEM PACKAGING (RPM, TGZ, ...)
