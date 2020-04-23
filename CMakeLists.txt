@@ -4,8 +4,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${C
 project(SCC_Test)
 
 set(ENABLE_SCV TRUE CACHE BOOL "Enable use of SCV")
+
 set(ENABLE_SHARED TRUE CACHE BOOL "Build shared libraries")
+
 set(NO_SUBMODULE_CHECK FALSE CACHE BOOL "Disable the submodule check")
+
 include(GitFunctions)
 get_branch_from_git()
 
@@ -33,12 +36,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-march=native" COMPILER_SUPPORTS_MARCH_NATIVE)
+
 if(COMPILER_SUPPORTS_MARCH_NATIVE)
-if("${CMAKE_BUILD_TYPE}" STREQUAL "") 
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
-elseif(NOT(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo"))
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
-endif()
+	if("${CMAKE_BUILD_TYPE}" STREQUAL "") 
+	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+	elseif(NOT(${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo"))
+	    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+	endif()
 endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -57,28 +61,9 @@ find_package(Boost COMPONENTS program_options filesystem system thread REQUIRED)
 
 # set-up SystemC and SCV
 find_package(OSCISystemC)
-if(SystemC_FOUND)
-    add_definitions(-DWITH_SYSTEMC)
-    include_directories(${SystemC_INCLUDE_DIRS})
-    link_directories(${SystemC_LIBRARY_DIRS})
-else()
+if(NOT SystemC_FOUND)
     message( FATAL_ERROR "SystemC library not found." )
 endif()
-
-if(CCI_FOUND)
-    include_directories(${CCI_INCLUDE_DIRS})
-    link_directories(${CCI_LIBRARY_DIRS})
-else()
-    message( FATAL_ERROR "SystemC CCI library not found." )
-endif()
-
-if(SCV_FOUND)   
-    add_definitions(-DWITH_SCV)
-    link_directories(${SCV_LIBRARY_DIRS})
-endif()
-
-set(PROJECT_3PARTY_DIRS external sr_report sr_signal)
-include(sc-components/cmake/clang-format.cmake)
 
 add_subdirectory(sc-components)
 add_subdirectory(examples)
