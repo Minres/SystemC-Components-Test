@@ -48,7 +48,8 @@ public:
     sc_core::sc_signal<sc_core::sc_time> s_clk;
     sc_core::sc_signal<bool> s_rst;
     sc_core::sc_vector<sc_core::sc_signal<bool>> s_global_interrupts;
-    sc_core::sc_signal<bool> s_core_interrupt;
+    sc_core::sc_signal<bool, sc_core::SC_MANY_WRITERS> s_core_interrupt;
+    sc_core::sc_vector<tlm::tlm_signal<>> s_gpio;
 
     simple_system(sc_core::sc_module_name nm);
 

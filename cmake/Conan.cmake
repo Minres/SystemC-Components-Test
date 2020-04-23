@@ -1,5 +1,5 @@
 macro(setup_conan)
-  find_program(conan conan)
+  find_program(conan conan PATHS /usr/bin /usr/local/bin)
   if(NOT EXISTS ${conan})
     message(FATAL_ERROR "Conan is required. Please see README.md")
     return()

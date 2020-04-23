@@ -119,7 +119,7 @@ void plic::global_int_port_cb() {
 
         if (enable && global_interrupts_i[i].read() == 1) {
             regs->r_pending = regs->r_pending | (0x1 << i);
-            LOG(INFO) << "pending interrupt identified: " << i;
+            SCDEBUG("plic") << "pending interrupt identified: " << i;
         }
     }
 
@@ -147,7 +147,7 @@ void plic::handle_pending_int() {
                 claim_prio = prio;
                 claim_int = i;
                 raise_int = 1;
-                LOG(INFO) << "pending interrupt activated: " << i;
+                SCDEBUG("plic") << "pending interrupt activated: " << i;
             }
         }
     }
@@ -158,14 +158,14 @@ void plic::handle_pending_int() {
         // todo: evluate clock period
     } else {
         regs->r_claim_complete = 0;
-        LOG(INFO) << "no further pending interrupt.";
+        SCDEBUG("plic") << "no further pending interrupt.";
     }
 }
 
 void plic::reset_pending_int(uint32_t irq) {
     // todo: evaluate enable register (see spec)
     // todo: make sure that pending is set, otherwise don't reset irq ... read spec.
-    LOG(INFO) << "reset pending interrupt: " << irq;
+    SCDEBUG("plic") << "reset pending interrupt: " << irq;
     // reset related pending bit
     regs->r_pending &= ~(0x1 << irq);
     core_interrupt_o.write(0);

@@ -35,17 +35,21 @@ simple_system::simple_system(sc_core::sc_module_name nm)
 , NAMED(s_clk)
 , NAMED(s_rst)
 , NAMED(s_global_interrupts, 256)
-, NAMED(s_core_interrupt) {
+, NAMED(s_core_interrupt)
+, NAMED(s_gpio, 32)
+{
     // todo: discuss naming conventions (s_<signal> vs. <port>_i/_o) --> covnert into _s
 
     // bus connections
     i_master.intor(i_router.target[0]);
-    size_t i = 0;
-    for (const auto &e : e300_plat_map) {
-        i_router.initiator[i](e.target);
-        i_router.set_target_range(i, e.start, e.size);
-        i++;
-    }
+    i_router.bind_target(i_plic.socket, 0, "plic");
+    i_router.bind_target(i_uart.socket, 1, "uart");
+    i_router.bind_target(i_spi.socket,  2, "spi");
+    i_router.bind_target(i_gpio.socket, 3, "gpio");
+
+    // target address ranges
+    for (const auto &e : e300_plat_map)
+        i_router.add_target_range(e.name, e.start, e.size);
 
     // clock/reset connections
     i_uart.clk_i(s_clk);
@@ -65,6 +69,11 @@ simple_system::simple_system(sc_core::sc_module_name nm)
     i_plic.global_interrupts_i.bind(s_global_interrupts);
     i_master.global_interrupts_o(s_global_interrupts);
     i_master.core_interrupt_i(s_core_interrupt);
+
+    for(auto i=0U; i<s_gpio.size(); ++i){
+      s_gpio[i].in(i_gpio.pins_o[i]);
+      i_gpio.pins_i[i](s_gpio[i].out);
+    }
 
     SC_THREAD(gen_reset);
 }

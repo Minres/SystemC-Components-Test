@@ -24,9 +24,7 @@
 #include <scc/report.h>
 #include <scc/scv_tr_db.h>
 #include <scc/tracer.h>
-#include <cci_utils/broker.h>
 #include <boost/program_options.hpp>
-#include <sstream>
 
 using namespace sysc;
 using namespace scc;
@@ -41,10 +39,6 @@ const size_t ERROR_UNHANDLED_EXCEPTION = 2;
 int sc_main(int argc, char *argv[]) {
     sc_core::sc_report_handler::set_actions( "/IEEE_Std_1666/deprecated", sc_core::SC_DO_NOTHING );
     sc_core::sc_report_handler::set_actions(sc_core::SC_ID_MORE_THAN_ONE_SIGNAL_DRIVER_, sc_core::SC_DO_NOTHING);
-    ///////////////////////////////////////////////////////////////////////////
-    // create global CCI broker
-    ///////////////////////////////////////////////////////////////////////////
-    cci::cci_register_broker(new cci_utils::broker("Global Broker"));
     ///////////////////////////////////////////////////////////////////////////
     // CLI argument parsing
     ///////////////////////////////////////////////////////////////////////////
@@ -77,14 +71,13 @@ int sc_main(int argc, char *argv[]) {
     ///////////////////////////////////////////////////////////////////////////
     // set up tracing & transaction recording
     ///////////////////////////////////////////////////////////////////////////
-    tracer trace("simple_system", tracer::TEXT, vm.count("trace"));
+    tracer trace("simple_system", tracer::COMPRESSED, vm.count("trace"));
     // todo: fix displayed clock period in VCD
 
     ///////////////////////////////////////////////////////////////////////////
     // instantiate top level
     ///////////////////////////////////////////////////////////////////////////
     simple_system i_simple_system("i_simple_system");
-    // sr_report_handler::add_sc_object_to_filter(&i_simple_system.i_master, sc_core::SC_WARNING, sc_core::SC_MEDIUM);
 
     ///////////////////////////////////////////////////////////////////////////
     // run simulation
@@ -93,7 +86,7 @@ int sc_main(int argc, char *argv[]) {
     // todo: provide end-of-simulation macros
 
     if (!sc_core::sc_end_of_simulation_invoked()) {
-        LOG(ERROR) << "simulation timed out";
+        SCERR() << "simulation timed out";
         sc_core::sc_stop();
     }
     return SUCCESS;

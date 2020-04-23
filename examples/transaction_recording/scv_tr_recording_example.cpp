@@ -16,6 +16,15 @@
 
  *****************************************************************************/
 #include "scv.h"
+#include "scc/scv_tr_db.h"
+#include "scc/report.h"
+#include "scc/value_registry.h"
+
+// text         11308µs/11602µs
+// compressed   10365µs/ 9860µs
+// binary       13233µs/10698µs
+// SQLite       30363µs/30018µs
+// LeveDB       23898µs/22367µs
 
 // hack to fake a true fifo_mutex
 #define fifo_mutex sc_mutex
@@ -189,8 +198,7 @@ inline void test::main1() {
     for (int i = 0; i < 3; i++) {
         rw_task_if::addr_t addr = i;
         rw_task_if::data_t data = transactor->read(&addr);
-        cout << "at time " << sc_time_stamp() << ": ";
-        cout << "received data : " << data << endl;
+        SCINFO(sc_get_current_object()->name())  << "received data : " << data;
     }
 
     scv_smart_ptr<rw_task_if::addr_t> addr;
@@ -198,14 +206,14 @@ inline void test::main1() {
 
         addr->next();
         rw_task_if::data_t data = transactor->read(addr->get_instance());
-        cout << "data for address " << *addr << " is " << data << endl;
+        SCINFO(sc_get_current_object()->name()) << "data for address " << *addr << " is " << data;
     }
 
     scv_smart_ptr<rw_task_if::write_t> write;
     for (int i = 0; i < 3; i++) {
         write->next();
         transactor->write(write->get_instance());
-        cout << "send data : " << write->data << endl;
+        SCINFO(sc_get_current_object()->name()) << "send data : " << write->data;
     }
 
     scv_smart_ptr<int> data;
@@ -224,8 +232,7 @@ inline void test::main2() {
     for (int i = 0; i < 3; i++) {
         rw_task_if::addr_t addr = i;
         rw_task_if::data_t data = transactor->read(&addr);
-        cout << "at time " << sc_time_stamp() << ": ";
-        cout << "received data : " << data << endl;
+        SCINFO(sc_get_current_object()->name())  << "received data : " << data;
     }
 
     scv_smart_ptr<rw_task_if::addr_t> addr;
@@ -233,14 +240,14 @@ inline void test::main2() {
 
         addr->next();
         rw_task_if::data_t data = transactor->read(addr->get_instance());
-        cout << "data for address " << *addr << " is " << data << endl;
+        SCINFO(sc_get_current_object()->name()) << "data for address " << *addr << " is " << data;
     }
 
     scv_smart_ptr<rw_task_if::write_t> write;
     for (int i = 0; i < 3; i++) {
         write->next();
         transactor->write(write->get_instance());
-        cout << "send data : " << write->data << endl;
+        SCINFO(sc_get_current_object()->name()) << "send data : " << write->data;
     }
 
     scv_smart_ptr<int> data;
@@ -291,8 +298,7 @@ inline void design::addr_phase() {
 
         outstandingAddresses.push_back(_addr);
         outstandingType.push_back(_rw);
-        cout << "at time " << sc_time_stamp() << ": ";
-        cout << "received request for memory address " << _addr << endl;
+        SCINFO(sc_get_current_object()->name())  << "received request for memory address " << _addr;
     }
 }
 
@@ -306,15 +312,15 @@ inline void design::data_phase() {
             wait(clk->posedge_event());
         }
         if (outstandingType.front() == false) {
-            cout << "reading memory address " << outstandingAddresses.front() << " with value "
-                 << memory[outstandingAddresses.front().to_ulong()] << endl;
+            SCINFO(sc_get_current_object()->name()) << "reading memory address " << outstandingAddresses.front() << " with value "
+                 << memory[outstandingAddresses.front().to_ulong()];
             bus_data = memory[outstandingAddresses.front().to_ulong()];
             data_rdy = 1;
             wait(clk->posedge_event());
             data_rdy = 0;
 
         } else {
-            cout << "writing memory address " << outstandingAddresses.front() << " with value " << bus_data << endl;
+            SCINFO(sc_get_current_object()->name()) << "writing memory address " << outstandingAddresses.front() << " with value " << bus_data;
             memory[outstandingAddresses.front().to_ulong()] = bus_data;
             data_rdy = 1;
             wait(clk->posedge_event());
@@ -324,13 +330,30 @@ inline void design::data_phase() {
         outstandingType.pop_front();
     }
 }
-extern void scv_tr_sqlite_init();
+
+inline const char* init_db(char type){
+    switch(type){
+    case '2':
+        scv_tr_compressed_init();
+        return "my_db.txlog";
+        break;
+    case '3':
+        scv_tr_sqlite_init();
+        return "my_db.txdb";
+        break;
+    default:
+        scv_tr_text_init();
+        return "my_db.txlog";
+        break;
+    }
+}
 
 int sc_main(int argc, char *argv[]) {
+    auto start = std::chrono::system_clock::now();
     scv_startup();
-
-    scv_tr_text_init();
-    const char* fileName = "my_db.txlog";
+    scc::init_logging(scc::LogConfig().logLevel(logging::DEBUG));
+    const char *fileName = argc==2? init_db(argv[1][0]): "my_db.txlog";
+    if(argc<2) scv_tr_text_init();
     scv_tr_db db(fileName);
     scv_tr_db::set_default_db(&db);
     sc_trace_file *tf = sc_create_vcd_trace_file("my_db");
@@ -343,6 +366,7 @@ int sc_main(int argc, char *argv[]) {
     sc_signal<bool> data_rdy;
     sc_signal<sc_uint<8>> bus_data;
 
+    scc::value_registry registry;
     // create modules/channels
     test t("t");
     rw_pipelined_transactor tr("tr");
@@ -373,7 +397,9 @@ int sc_main(int argc, char *argv[]) {
     // Disable check for bus simulation.
     sc_report_handler::set_actions(SC_ID_MORE_THAN_ONE_SIGNAL_DRIVER_, SC_DO_NOTHING);
     // run the simulation
-    sc_start(1.0, SC_MS);
+    sc_start(10.0, SC_US);
     sc_close_vcd_trace_file(tf);
+    auto int_us = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now()-start);
+    SCINFO() << "simulation duration "<<int_us.count()<<"µs";
     return 0;
 }
